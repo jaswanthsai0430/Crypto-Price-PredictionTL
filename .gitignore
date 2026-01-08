@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ML Models (large files)
+backend/models/saved/*.h5
+backend/models/saved/*.pkl
+backend/models/saved/*.json
+
+# Cache
+backend/cache/
+*.cache
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Large data files
+*.csv
+*.xlsx
+*.zip
+*.tar.gz
+
+# Gemini artifacts
+.gemini/
+
+# Documentation (optional - remove if you want to include)
+ADVANCED_FEATURES_COMPLETE.md
+API_DIAGNOSTIC_REPORT.md
+ADDING_BNB_DOGE.md

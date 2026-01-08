@@ -1,0 +1,44 @@
+{
+    "api": {
+        "base_url": "http://localhost:5000/api",
+        "update_interval": 60000
+    },
+    "supported_coins": [
+        "BTC",
+        "ETH",
+        "SOLANA"
+    ],
+    "model": {
+        "lookback_days": 60,
+        "prediction_days": 3
+    },
+    "sentiment": {
+        "categories": {
+            "worst": {
+                "min": 0,
+                "max": 20,
+                "color": "#ff0000"
+            },
+            "bad": {
+                "min": 20,
+                "max": 40,
+                "color": "#ff6b00"
+            },
+            "average": {
+                "min": 40,
+                "max": 60,
+                "color": "#ffb800"
+            },
+            "medium": {
+                "min": 60,
+                "max": 80,
+                "color": "#90ee90"
+            },
+            "good": {
+                "min": 80,
+                "max": 100,
+                "color": "#00ff00"
+            }
+        }
+    }
+}
