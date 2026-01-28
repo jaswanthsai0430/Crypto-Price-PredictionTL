@@ -15,7 +15,12 @@ class MockDataGenerator:
             'ETH': 3600,
             'SOLANA': 235,
             'BNB': 600,
-            'DOGE': 0.08
+            'DOGE': 0.08,
+            'XRP': 0.55,
+            'ADA': 0.50,
+            'AVAX': 35,
+            'DOT': 7,
+            'LINK': 15
         }
         
         # Market caps (approximate)
@@ -24,7 +29,12 @@ class MockDataGenerator:
             'ETH': 430000000000,   # $430B
             'SOLANA': 110000000000,  # $110B
             'BNB': 90000000000,    # $90B
-            'DOGE': 12000000000    # $12B
+            'DOGE': 12000000000,   # $12B
+            'XRP': 30000000000,    # $30B
+            'ADA': 18000000000,    # $18B
+            'AVAX': 13000000000,   # $13B
+            'DOT': 10000000000,    # $10B
+            'LINK': 9000000000     # $9B
         }
     
     def generate_historical_data(self, coin, days=365):
@@ -175,7 +185,7 @@ if __name__ == "__main__":
     # Test mock data generator
     generator = MockDataGenerator()
     
-    for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE']:
+    for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK']:
         print(f"\n{'='*50}")
         print(f"Mock data for {coin}")
         print(f"{'='*50}")

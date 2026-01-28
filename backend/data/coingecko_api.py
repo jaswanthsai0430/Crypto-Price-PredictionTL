@@ -19,7 +19,12 @@ class CoinGeckoAPI:
             'ETH': 'ethereum',
             'SOLANA': 'solana',
             'BNB': 'binancecoin',
-            'DOGE': 'dogecoin'
+            'DOGE': 'dogecoin',
+            'XRP': 'ripple',
+            'ADA': 'cardano',
+            'AVAX': 'avalanche-2',
+            'DOT': 'polkadot',
+            'LINK': 'chainlink'
         }
         
         self.session = requests.Session()
@@ -32,8 +37,7 @@ class CoinGeckoAPI:
         """
         Get current price and market data
         
-        Args:
-            coin: Cryptocurrency symbol (BTC, ETH, SOLANA)
+        
         
         Returns:
             Dictionary with price data

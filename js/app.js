@@ -1,5 +1,6 @@
 // Main Application Logic
-const API_BASE_URL = 'http://localhost:5000/api';
+// Main Application Logic
+const API_BASE_URL = 'http://localhost:5000/api'; // Ensure this matches your backend
 let currentCoin = 'BTC';
 let updateInterval = null;
 
@@ -9,7 +10,12 @@ const coinNames = {
     'ETH': 'Ethereum',
     'SOLANA': 'Solana',
     'BNB': 'Binance Coin',
-    'DOGE': 'Dogecoin'
+    'DOGE': 'Dogecoin',
+    'XRP': 'Ripple',
+    'ADA': 'Cardano',
+    'AVAX': 'Avalanche',
+    'DOT': 'Polkadot',
+    'LINK': 'Chainlink'
 };
 
 // Initialize app
@@ -19,20 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
     startAutoUpdate();
 });
 
-// Initialize tab switching
+// Initialize sidebar switching
 function initializeTabs() {
-    const tabs = document.querySelectorAll('.tab-btn');
+    const navItems = document.querySelectorAll('.nav-item');
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs
-            tabs.forEach(t => t.classList.remove('active'));
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            console.log('Clicked coin:', item.dataset.coin);
 
-            // Add active class to clicked tab
-            tab.classList.add('active');
+            // Remove active class from all items
+            navItems.forEach(nav => nav.classList.remove('active'));
+
+            // Add active class to clicked item
+            item.classList.add('active');
 
             // Get selected coin
-            currentCoin = tab.dataset.coin;
+            currentCoin = item.dataset.coin;
 
             // Load data for selected coin
             loadCoinData(currentCoin);
@@ -44,8 +52,9 @@ function initializeTabs() {
 async function loadCoinData(coin) {
     console.log(`Loading data for ${coin}...`);
 
-    // Update coin name
-    document.getElementById('current-coin-name').textContent = coinNames[coin];
+    // Update coin name in header
+    const headerName = document.getElementById('header-coin-name');
+    if (headerName) headerName.textContent = coinNames[coin];
 
     // Show loading state
     showLoading();
@@ -65,7 +74,11 @@ async function loadCoinData(coin) {
             updatePriceDisplay(data.current);
             updateChart(data.historical, data.prediction);
             updatePredictions(data.prediction);
-            updateSentiment(data.sentiment);
+            if (data.sentiment) {
+                updateSentiment(data.sentiment);
+            } else {
+                console.warn('No sentiment data received');
+            }
         } else {
             console.error('API returned error:', data.error);
             showError('Failed to load data');
@@ -137,6 +150,7 @@ function updatePredictions(predictionData) {
 
 // Start auto-update
 function startAutoUpdate() {
+
     // Update every 60 seconds
     updateInterval = setInterval(() => {
         loadCoinData(currentCoin);

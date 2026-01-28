@@ -116,7 +116,12 @@ class SentimentAnalyzer:
             'ETH': 'Ethereum',
             'SOLANA': 'Solana',
             'BNB': 'Binance Coin',
-            'DOGE': 'Dogecoin'
+            'DOGE': 'Dogecoin',
+            'XRP': 'Ripple',
+            'ADA': 'Cardano',
+            'AVAX': 'Avalanche',
+            'DOT': 'Polkadot',
+            'LINK': 'Chainlink'
         }
         
         coin_name = coin_names.get(coin.upper(), coin)
@@ -157,7 +162,14 @@ class SentimentAnalyzer:
             coin_id_map = {
                 'BTC': 'bitcoin',
                 'ETH': 'ethereum',
-                'SOLANA': 'solana'
+                'SOLANA': 'solana',
+                'BNB': 'binancecoin',
+                'DOGE': 'dogecoin',
+                'XRP': 'ripple',
+                'ADA': 'cardano',
+                'AVAX': 'avalanche-2',
+                'DOT': 'polkadot',
+                'LINK': 'chainlink'
             }
             
             coin_id = coin_id_map.get(coin.upper(), coin.lower())

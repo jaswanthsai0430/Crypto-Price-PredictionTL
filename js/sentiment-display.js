@@ -27,53 +27,45 @@ function updateSentiment(sentimentData) {
 
 // Update sentiment meter animation
 function updateSentimentMeter(score) {
-    const scoreElement = document.getElementById('sentiment-score');
-    const meterFill = document.getElementById('meter-fill');
+    const scoreElement = document.getElementById('sentiment-score-val');
+    const circle = document.getElementById('sentiment-circle');
 
-    if (!scoreElement || !meterFill) return;
+    if (!scoreElement || !circle) return;
 
     // Animate score counter
     animateValue(scoreElement, 0, score, 1000);
 
-    // Calculate arc length (251.2 is the total arc length)
-    const totalLength = 251.2;
-    const offset = totalLength - (totalLength * score / 100);
+    // Update circular progress
+    // stroke-dasharray is "value, 100" in the new SVG
+    setTimeout(() => {
+        circle.setAttribute('stroke-dasharray', `${score}, 100`);
 
-    // Animate meter fill
-    meterFill.style.transition = 'stroke-dashoffset 1.5s ease-out';
-    meterFill.style.strokeDashoffset = offset;
+        // Update color based on score
+        let color = '#ff0000'; // Worst
+        if (score >= 80) color = '#00ff00'; // Best
+        else if (score >= 60) color = '#90ee90'; // Good
+        else if (score >= 40) color = '#ffb800'; // Neutral
+        else if (score >= 20) color = '#ff6b00'; // Bad
 
-    // Update gradient based on score
-    updateMeterGradient(score);
+        circle.style.stroke = color;
+
+        // Update badge
+        const badge = document.getElementById('sentiment-badge');
+        if (badge) {
+            badge.style.backgroundColor = `${color}33`; // 20% opacity
+            badge.style.color = color;
+
+            let label = 'Neutral';
+            if (score >= 60) label = 'Positive';
+            if (score <= 40) label = 'Negative';
+            badge.textContent = label;
+        }
+    }, 100);
 }
 
-// Update meter gradient color based on score
+// Update meter gradient color based on score - DEPRECATED in new UI
 function updateMeterGradient(score) {
-    const gradient = document.getElementById('gradient');
-    if (!gradient) return;
-
-    // Define color stops based on score ranges
-    let color1, color2;
-
-    if (score < 20) {
-        color1 = '#ff0000';
-        color2 = '#ff0000';
-    } else if (score < 40) {
-        color1 = '#ff0000';
-        color2 = '#ff6b00';
-    } else if (score < 60) {
-        color1 = '#ff6b00';
-        color2 = '#ffb800';
-    } else if (score < 80) {
-        color1 = '#ffb800';
-        color2 = '#90ee90';
-    } else {
-        color1 = '#90ee90';
-        color2 = '#00ff00';
-    }
-
-    // This is a simplified version - the gradient is already defined in HTML
-    // For dynamic updates, you would need to modify the gradient stops
+    // No-op for new circular design which uses solid stroke colors
 }
 
 // Animate number counter

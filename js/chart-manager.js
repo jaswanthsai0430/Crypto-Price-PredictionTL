@@ -1,122 +1,81 @@
-// Chart Manager - Handles price chart visualization
+// Chart Manager - Handles price chart visualization using ApexCharts
 let priceChart = null;
 
 // Initialize chart
 function initChart() {
-    const ctx = document.getElementById('priceChart');
+    const chartContainer = document.querySelector("#priceChart");
+    if (!chartContainer) return;
 
-    if (!ctx) {
-        console.error('Chart canvas not found');
-        return;
-    }
-
-    priceChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-                {
-                    label: 'Historical Price',
-                    data: [],
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#667eea',
-                    pointHoverBorderColor: '#fff',
-                    pointHoverBorderWidth: 2
-                },
-                {
-                    label: 'Predicted Price',
-                    data: [],
-                    borderColor: '#f5576c',
-                    backgroundColor: 'rgba(245, 87, 108, 0.1)',
-                    borderWidth: 3,
-                    borderDash: [10, 5],
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#f5576c',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 8
+    // ApexCharts options
+    const options = {
+        series: [],
+        chart: {
+            type: 'candlestick',
+            height: 350,
+            background: 'transparent',
+            toolbar: {
+                show: true,
+                tools: {
+                    download: false
                 }
-            ]
+            },
+            animations: {
+                enabled: true
+            }
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: true,
-                    backgroundColor: 'rgba(26, 26, 46, 0.95)',
-                    titleColor: '#fff',
-                    bodyColor: '#a0a0b8',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: true,
-                    callbacks: {
-                        label: function (context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += '$' + context.parsed.y.toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                });
-                            }
-                            return label;
-                        }
-                    }
+        title: {
+            text: 'Live vs Predicted',
+            align: 'left',
+            style: {
+                color: '#fff'
+            }
+        },
+        xaxis: {
+            type: 'datetime',
+            labels: {
+                style: {
+                    colors: '#8e8da4'
                 }
             },
-            scales: {
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.05)',
-                        drawBorder: false
-                    },
-                    ticks: {
-                        color: '#6b6b8a',
-                        maxRotation: 45,
-                        minRotation: 0
-                    }
-                },
-                y: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.05)',
-                        drawBorder: false
-                    },
-                    ticks: {
-                        color: '#6b6b8a',
-                        callback: function (value) {
-                            return '$' + value.toLocaleString('en-US', {
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0
-                            });
-                        }
-                    }
-                }
+            axisBorder: {
+                show: false
             },
-            animation: {
-                duration: 750,
-                easing: 'easeInOutQuart'
+            axisTicks: {
+                show: false
+            }
+        },
+        yaxis: {
+            tooltip: {
+                enabled: true
+            },
+            labels: {
+                style: {
+                    colors: '#8e8da4'
+                },
+                formatter: function (value) {
+                    return "$" + value.toLocaleString();
+                }
+            }
+        },
+        grid: {
+            borderColor: '#2a2a3e',
+            strokeDashArray: 4
+        },
+        theme: {
+            mode: 'dark'
+        },
+        plotOptions: {
+            candlestick: {
+                colors: {
+                    upward: '#00ff00',
+                    downward: '#ff0000'
+                }
             }
         }
-    });
+    };
+
+    priceChart = new ApexCharts(chartContainer, options);
+    priceChart.render();
 }
 
 // Update chart with new data
@@ -130,60 +89,83 @@ function updateChart(historicalData, predictionData) {
         return;
     }
 
-    // Prepare historical data
-    const labels = [];
-    const prices = [];
-
-    historicalData.forEach(item => {
-        labels.push(formatChartDate(item.date));
-        prices.push(item.close);
+    // Format historical data for ApexCharts Candlestick
+    // Needed format: { x: date, y: [Open, High, Low, Close] }
+    const historicalSeries = historicalData.map(item => {
+        return {
+            x: new Date(item.date).getTime(), // Timestamp
+            y: [item.open, item.high, item.low, item.close]
+        };
     });
 
-    // Prepare prediction data
-    let predictionLabels = [];
-    let predictionPrices = [];
+    const seriesData = [{
+        name: 'Historical',
+        type: 'candlestick',
+        data: historicalSeries
+    }];
 
-    if (predictionData && predictionData.predictions) {
-        // Add last historical point to connect the lines
-        predictionLabels.push(labels[labels.length - 1]);
-        predictionPrices.push(prices[prices.length - 1]);
+    // Add Prediction
+    // Since prediction is just a price (Close), representing it as a point or line
+    // For visual comparison, we can show it as a Line series
+    // Add Prediction
+    // Since prediction is just a price (Close), representing it as a point or line
+    // For visual comparison, we can show it as a Line series
+    if (predictionData) {
+        // Handle array or object format
+        const preds = Array.isArray(predictionData) ? predictionData : (predictionData.predictions || []);
 
-        // Add prediction points
-        predictionData.predictions.forEach(pred => {
-            predictionLabels.push(formatChartDate(pred.date));
-            predictionPrices.push(pred.price);
-        });
+        if (preds.length > 0 && historicalSeries.length > 0) {
+            // Link predicted points to the last historical point
+            const lastHistPoint = historicalSeries[historicalSeries.length - 1];
 
-        // Extend labels to include prediction dates
-        predictionData.predictions.forEach(pred => {
-            labels.push(formatChartDate(pred.date));
-        });
+            // Convert predictions to line data points
+            const predictionPoints = [];
+
+            // Start connection from last known close
+            if (lastHistPoint && lastHistPoint.y) {
+                predictionPoints.push({
+                    x: lastHistPoint.x,
+                    y: lastHistPoint.y[3] // Close price
+                });
+            }
+
+            preds.forEach(pred => {
+                let timestamp;
+                if (typeof pred.date === 'string') {
+                    timestamp = new Date(pred.date).getTime();
+                } else if (pred.date) {
+                    timestamp = pred.date; // already ts
+                } else {
+                    return; // Skip invalid
+                }
+
+                const price = parseFloat(pred.price);
+                if (!isNaN(price)) {
+                    predictionPoints.push({
+                        x: timestamp,
+                        y: price
+                    });
+                }
+            });
+
+            if (predictionPoints.length > 0) {
+                seriesData.push({
+                    name: 'Predicted Path',
+                    type: 'line',
+                    data: predictionPoints,
+                    color: '#f5576c' // Prediction color
+                });
+            }
+        }
     }
 
-    // Update chart data
-    priceChart.data.labels = labels;
-
-    // Historical dataset
-    priceChart.data.datasets[0].data = prices;
-
-    // Prediction dataset - fill with null for historical period
-    const predictionDataset = new Array(prices.length - 1).fill(null);
-    predictionDataset.push(...predictionPrices);
-    priceChart.data.datasets[1].data = predictionDataset;
-
     // Update chart
-    priceChart.update('active');
+    priceChart.updateSeries(seriesData);
+
+    // Update options if needed (e.g. title) but usually series update is enough
 }
 
-// Format date for chart
-function formatChartDate(dateString) {
-    const date = new Date(dateString);
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
-    const day = date.getDate();
-    return `${month} ${day}`;
-}
-
-// Destroy chart (cleanup)
+// Destroy chart
 function destroyChart() {
     if (priceChart) {
         priceChart.destroy();
@@ -191,7 +173,7 @@ function destroyChart() {
     }
 }
 
-// Initialize chart when DOM is ready
+// Initialize on load
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initChart);
 } else {

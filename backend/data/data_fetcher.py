@@ -18,7 +18,12 @@ class DataFetcher:
             'ETH': 'ETH',
             'SOLANA': 'SOLANA',
             'BNB': 'BNB',
-            'DOGE': 'DOGE'
+            'DOGE': 'DOGE',
+            'XRP': 'XRP',
+            'ADA': 'ADA',
+            'AVAX': 'AVAX',
+            'DOT': 'DOT',
+            'LINK': 'LINK'
         }
         
         # CoinGecko API (free, reliable)
@@ -209,7 +214,7 @@ if __name__ == "__main__":
     # Test the data fetcher
     fetcher = DataFetcher()
     
-    for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE']:
+    for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK']:
         print(f"\n{'='*50}")
         print(f"Testing {coin}")
         print(f"{'='*50}")

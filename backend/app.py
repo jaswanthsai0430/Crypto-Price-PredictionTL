@@ -18,7 +18,7 @@ data_fetcher = DataFetcher()
 sentiment_analyzer = SentimentAnalyzer()
 
 # Supported coins
-SUPPORTED_COINS = ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE']
+SUPPORTED_COINS = ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK']
 
 @app.route('/')
 def home():
@@ -176,10 +176,12 @@ def get_all_data(coin):
         # Get historical data
         historical = data_fetcher.get_historical_data(coin, period='1mo', interval='1d')
         chart_data = []
-        if historical is not None:
             for idx, row in historical.iterrows():
                 chart_data.append({
                     'date': row['Date'].strftime('%Y-%m-%d') if hasattr(row['Date'], 'strftime') else str(row['Date']),
+                    'open': float(row['Open']),
+                    'high': float(row['High']),
+                    'low': float(row['Low']),
                     'close': float(row['Close']),
                     'volume': float(row['Volume'])
                 })

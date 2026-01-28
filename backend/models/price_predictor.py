@@ -25,7 +25,7 @@ class PricePredictor:
         self.model = None
         self.scaler = MinMaxScaler(feature_range=(0, 1))
         self.lookback = 60  # Use 60 days of historical data
-        self.prediction_days = 3  # Predict next 3 days
+        self.prediction_days = 1  # Predict next 1 day
         
     def create_model(self, input_shape):
         """
@@ -56,7 +56,7 @@ class PricePredictor:
             # Dense layers for final prediction
             Dense(16, activation='relu'),
             BatchNormalization(),
-            Dense(self.prediction_days)  # Predict next 3 days
+            Dense(self.prediction_days)  # Predict next 1 day
         ])
         
         # Use Huber loss - more robust to outliers than MSE
@@ -100,7 +100,7 @@ class PricePredictor:
         for i in range(self.lookback, len(scaled_data) - self.prediction_days):
             X.append(scaled_data[i - self.lookback:i])
             
-            # Target is the closing price for next 3 days
+            # Target is the closing price for next days
             close_idx = available_cols.index('Close')
             y.append(scaled_data[i:i + self.prediction_days, close_idx])
         
@@ -210,7 +210,7 @@ class PricePredictor:
     
     def predict(self, data):
         """
-        Make price predictions for next 3 days
+        Make price predictions for next days
         
         Args:
             data: Recent historical data (at least lookback days)
@@ -245,9 +245,16 @@ class PricePredictor:
         # Create dummy array with same shape as original features
         dummy = np.zeros((self.prediction_days, len(available_cols)))
         close_idx = available_cols.index('Close')
-        dummy[:, close_idx] = prediction_scaled[0]
         
-        prediction = self.scaler.inverse_transform(dummy)[:, close_idx]
+        # Reshape prediction if it's 1D but we need to assign it to a 2D slice
+        if self.prediction_days == 1:
+             dummy[0, close_idx] = prediction_scaled[0][0]
+             prediction = self.scaler.inverse_transform(dummy)[0, close_idx]
+             # Make it a list/array for consistent processing below
+             prediction = [prediction]
+        else:
+             dummy[:, close_idx] = prediction_scaled[0]
+             prediction = self.scaler.inverse_transform(dummy)[:, close_idx]
         
         # Get current price
         current_price = data['Close'].iloc[-1]
@@ -283,7 +290,7 @@ if __name__ == "__main__":
     
     fetcher = DataFetcher()
     
-    for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE']:
+    for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK']:
         print(f"\n{'='*60}")
         print(f"Training model for {coin}")
         print(f"{'='*60}")
