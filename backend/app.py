@@ -175,7 +175,9 @@ def get_all_data(coin):
         
         # Get historical data
         historical = data_fetcher.get_historical_data(coin, period='1mo', interval='1d')
-        chart_data = []
+
+        if historical is not None:
+            chart_data = []
             for idx, row in historical.iterrows():
                 chart_data.append({
                     'date': row['Date'].strftime('%Y-%m-%d') if hasattr(row['Date'], 'strftime') else str(row['Date']),
@@ -185,6 +187,8 @@ def get_all_data(coin):
                     'close': float(row['Close']),
                     'volume': float(row['Volume'])
                 })
+        else:
+            chart_data = []
         
         # Get prediction
         data = data_fetcher.prepare_data_for_model(coin)

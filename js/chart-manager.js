@@ -14,63 +14,82 @@ function initChart() {
             height: 350,
             background: 'transparent',
             toolbar: {
-                show: true,
-                tools: {
-                    download: false
-                }
+                show: false
             },
             animations: {
-                enabled: true
-            }
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800
+            },
+            fontFamily: 'Inter, sans-serif'
         },
         title: {
-            text: 'Live vs Predicted',
-            align: 'left',
-            style: {
-                color: '#fff'
-            }
+            text: undefined, // cleaner look without internal title
+        },
+        annotations: {
+            xaxis: [{
+                x: new Date().getTime(),
+                borderColor: '#6c5ce7',
+                label: {
+                    style: {
+                        color: '#fff',
+                        background: '#6c5ce7',
+                        fontSize: '10px',
+                        padding: { left: 4, right: 4, top: 2, bottom: 2 }
+                    },
+                    text: 'TODAY',
+                    orientation: 'horizontal',
+                    offsetY: 0
+                },
+                strokeDashArray: 0,
+            }]
         },
         xaxis: {
             type: 'datetime',
+            tooltip: { enabled: false },
+            axisBorder: { show: false },
+            axisTicks: { show: false },
             labels: {
-                style: {
-                    colors: '#8e8da4'
-                }
+                style: { colors: '#6b6b8a', fontSize: '10px' },
+                datetimeFormatter: { year: 'yyyy', month: 'MMM', day: 'dd' }
             },
-            axisBorder: {
-                show: false
-            },
-            axisTicks: {
-                show: false
+            crosshairs: {
+                show: true,
+                width: 1,
+                position: 'back',
+                opacity: 0.9,
+                stroke: { color: '#6c5ce7', width: 1, dashArray: 3 }
             }
         },
         yaxis: {
-            tooltip: {
-                enabled: true
-            },
+            tooltip: { enabled: true },
             labels: {
-                style: {
-                    colors: '#8e8da4'
-                },
-                formatter: function (value) {
-                    return "$" + value.toLocaleString();
-                }
+                style: { colors: '#6b6b8a', fontSize: '10px', fontFamily: 'JetBrains Mono' },
+                formatter: (value) => "$" + value.toLocaleString()
             }
         },
         grid: {
-            borderColor: '#2a2a3e',
-            strokeDashArray: 4
+            borderColor: 'rgba(255, 255, 255, 0.05)',
+            strokeDashArray: 4,
+            xaxis: { lines: { show: true } },
+            yaxis: { lines: { show: true } },
+            padding: { top: 0, right: 0, bottom: 0, left: 10 }
         },
-        theme: {
-            mode: 'dark'
-        },
+        theme: { mode: 'dark' },
         plotOptions: {
             candlestick: {
                 colors: {
-                    upward: '#00ff00',
-                    downward: '#ff0000'
-                }
+                    upward: '#00E396',
+                    downward: '#FF4560'
+                },
+                wick: { useFillColor: true }
             }
+        },
+        tooltip: {
+            theme: 'dark',
+            style: { fontSize: '12px' },
+            x: { format: 'dd MMM yyyy' },
+            y: { formatter: (value) => "$" + value.toLocaleString() }
         }
     };
 
@@ -153,7 +172,11 @@ function updateChart(historicalData, predictionData) {
                     name: 'Predicted Path',
                     type: 'line',
                     data: predictionPoints,
-                    color: '#f5576c' // Prediction color
+                    color: '#6c5ce7', // Prediction color (Primary Purple)
+                    stroke: {
+                        width: 3,
+                        dashArray: 5
+                    }
                 });
             }
         }

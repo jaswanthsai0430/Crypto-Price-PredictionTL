@@ -5,12 +5,15 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dense, Dropout, Bidirectional, BatchNormalization
+from keras.layers import LSTM, Dense, Dropout, Bidirectional, BatchNormalization, Attention
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from keras.optimizers import Adam
 import os
 import pickle
 import json
 from datetime import datetime, timedelta
+import warnings
+warnings.filterwarnings('ignore')
 
 class PricePredictor:
     def __init__(self, coin, model_dir='models/saved'):
@@ -29,7 +32,7 @@ class PricePredictor:
         
     def create_model(self, input_shape):
         """
-        Create LSTM model architecture
+        Create improved LSTM model architecture with better hyperparameters
         
         Args:
             input_shape: Shape of input data (lookback, features)
@@ -39,30 +42,42 @@ class PricePredictor:
         """
         model = Sequential([
             # First Bidirectional LSTM layer - processes sequence forward and backward
-            Bidirectional(LSTM(128, return_sequences=True), input_shape=input_shape),
-            BatchNormalization(),  # Normalizes activations for better training
+            Bidirectional(LSTM(256, return_sequences=True), input_shape=input_shape),
+            BatchNormalization(),
             Dropout(0.3),
             
             # Second Bidirectional LSTM layer
-            Bidirectional(LSTM(64, return_sequences=True)),
+            Bidirectional(LSTM(192, return_sequences=True)),
             BatchNormalization(),
             Dropout(0.3),
             
             # Third Bidirectional LSTM layer
-            Bidirectional(LSTM(32, return_sequences=False)),
+            Bidirectional(LSTM(128, return_sequences=True)),
+            BatchNormalization(),
+            Dropout(0.25),
+            
+            # Fourth Bidirectional LSTM layer
+            Bidirectional(LSTM(64, return_sequences=False)),
             BatchNormalization(),
             Dropout(0.2),
             
             # Dense layers for final prediction
-            Dense(16, activation='relu'),
+            Dense(64, activation='relu'),
             BatchNormalization(),
+            Dropout(0.2),
+            
+            Dense(32, activation='relu'),
+            BatchNormalization(),
+            
             Dense(self.prediction_days)  # Predict next 1 day
         ])
         
-        # Use Huber loss - more robust to outliers than MSE
+        # Use optimized Adam optimizer with custom learning rate
+        optimizer = Adam(learning_rate=0.001)
+        
         model.compile(
-            optimizer='adam',
-            loss='huber',  # Better for Bidirectional LSTM
+            optimizer=optimizer,
+            loss='huber',
             metrics=['mae', 'mse']
         )
         
@@ -70,7 +85,7 @@ class PricePredictor:
     
     def prepare_sequences(self, data, target_col='Close'):
         """
-        Prepare sequences for LSTM training
+        Prepare sequences for LSTM training using all available features
         
         Args:
             data: DataFrame with features
@@ -79,17 +94,29 @@ class PricePredictor:
         Returns:
             X, y arrays for training
         """
-        # Select features for training
-        feature_cols = ['Close', 'Volume', 'MA7', 'MA21', 'RSI', 'MACD']
+        # Use all available numeric columns except Date as features
+        exclude_cols = ['Date', 'Unnamed: 0']
+        feature_cols = [col for col in data.columns if col not in exclude_cols and data[col].dtype in ['float64', 'int64']]
         
-        # Filter available columns
+        # Ensure Close is in features
+        if 'Close' not in feature_cols:
+            print("Warning: 'Close' column not found in features")
+            feature_cols = ['Close', 'Volume', 'MA7', 'MA21', 'MA50', 'RSI', 'MACD']
+        
         available_cols = [col for col in feature_cols if col in data.columns]
         
         if not available_cols:
             raise ValueError("No valid feature columns found in data")
         
+        print(f"Using {len(available_cols)} features for training: {available_cols[:10]}..." if len(available_cols) > 10 else f"Using {len(available_cols)} features: {available_cols}")
+        
         # Extract features
         features = data[available_cols].values
+        
+        # Handle NaN values - forward fill then backward fill
+        df_features = pd.DataFrame(features, columns=available_cols)
+        df_features = df_features.fillna(method='ffill').fillna(method='bfill')
+        features = df_features.values
         
         # Scale features
         scaled_data = self.scaler.fit_transform(features)
@@ -106,41 +133,48 @@ class PricePredictor:
         
         return np.array(X), np.array(y), available_cols
     
-    def train(self, data, epochs=100, batch_size=32, validation_split=0.2):
+    def train(self, data, epochs=150, batch_size=16, validation_split=0.2):
         """
-        Train the LSTM model
+        Train the LSTM model with improved hyperparameters
         
         Args:
             data: DataFrame with historical price data and indicators
-            epochs: Number of training epochs
-            batch_size: Batch size for training
+            epochs: Number of training epochs (default 150 for better convergence)
+            batch_size: Batch size for training (smaller for more frequent updates)
             validation_split: Fraction of data for validation
         
         Returns:
             Training history
         """
-        print(f"Training model for {self.coin}...")
+        print(f"\n{'='*70}")
+        print(f"🚀 Training Improved Model for {self.coin}")
+        print(f"{'='*70}")
         
         # Prepare sequences
         X, y, feature_cols = self.prepare_sequences(data)
         
-        print(f"Training data shape: X={X.shape}, y={y.shape}")
+        print(f"📊 Training data shape: X={X.shape}, y={y.shape}")
+        print(f"📈 Total samples: {len(X)}")
         
-        # Split data
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, shuffle=False
-        )
+        # Split data using time-based split (more realistic for time series)
+        split_idx = int(len(X) * 0.8)
+        X_train, X_test = X[:split_idx], X[split_idx:]
+        y_train, y_test = y[:split_idx], y[split_idx:]
+        
+        print(f"📚 Train samples: {len(X_train)}, Test samples: {len(X_test)}")
         
         # Create model
         self.model = self.create_model(input_shape=(X.shape[1], X.shape[2]))
         
+        print(f"\n🔧 Model Architecture:")
         print(self.model.summary())
         
         # Callbacks
         early_stop = EarlyStopping(
             monitor='val_loss',
-            patience=15,  # Increased patience for Bidirectional LSTM
-            restore_best_weights=True
+            patience=20,  # Increased patience
+            restore_best_weights=True,
+            verbose=1
         )
         
         checkpoint = ModelCheckpoint(
@@ -154,12 +188,13 @@ class PricePredictor:
         reduce_lr = ReduceLROnPlateau(
             monitor='val_loss',
             factor=0.5,
-            patience=5,
+            patience=8,
             min_lr=0.00001,
             verbose=1
         )
         
         # Train model
+        print(f"\n⏳ Starting training... (this may take a few minutes)")
         history = self.model.fit(
             X_train, y_train,
             epochs=epochs,
@@ -181,13 +216,18 @@ class PricePredictor:
             'feature_cols': feature_cols,
             'trained_date': datetime.now().isoformat(),
             'final_loss': float(history.history['loss'][-1]),
-            'final_val_loss': float(history.history['val_loss'][-1])
+            'final_val_loss': float(history.history['val_loss'][-1]),
+            'epochs_trained': len(history.history['loss']),
+            'num_features': len(feature_cols)
         }
         
         with open(self.config_path, 'w') as f:
             json.dump(config, f, indent=2)
         
-        print(f"Model trained and saved to {self.model_path}")
+        print(f"\n✅ Model trained and saved to {self.model_path}")
+        print(f"📊 Final Training Loss: {history.history['loss'][-1]:.6f}")
+        print(f"📊 Final Validation Loss: {history.history['val_loss'][-1]:.6f}")
+        print(f"🔢 Features used: {len(feature_cols)}")
         
         return history
     
@@ -291,17 +331,17 @@ if __name__ == "__main__":
     fetcher = DataFetcher()
     
     for coin in ['BTC', 'ETH', 'SOLANA', 'BNB', 'DOGE', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK']:
-        print(f"\n{'='*60}")
+        print(f"\n{'='*70}")
         print(f"Training model for {coin}")
-        print(f"{'='*60}")
+        print(f"{'='*70}")
         
         # Get data
         data = fetcher.prepare_data_for_model(coin)
         
         if data is not None and len(data) > 100:
-            # Train model
+            # Train model with improved hyperparameters
             predictor = PricePredictor(coin)
-            history = predictor.train(data, epochs=30, batch_size=32)
+            history = predictor.train(data, epochs=150, batch_size=16)
             
             # Make prediction
             prediction = predictor.predict(data)
@@ -309,4 +349,6 @@ if __name__ == "__main__":
             print(f"Current Price: ${prediction['current_price']:,.2f}")
             for pred in prediction['predictions']:
                 print(f"  {pred['date']}: ${pred['price']:,.2f} ({pred['change_percent']:+.2f}%)")
+        else:
+            print(f"❌ Insufficient data for {coin}")
 

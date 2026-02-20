@@ -203,23 +203,4 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Add CSS animations for news items
-const newsStyle = document.createElement('style');
-newsStyle.textContent = `
-    .news-item {
-        animation: newsSlideIn 0.5s ease forwards;
-        opacity: 0;
-    }
-    
-    @keyframes newsSlideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-`;
-document.head.appendChild(newsStyle);
+

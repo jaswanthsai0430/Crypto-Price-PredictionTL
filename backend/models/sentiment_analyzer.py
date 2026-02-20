@@ -217,35 +217,35 @@ class SentimentAnalyzer:
                 'title': f'{coin_name} shows strong momentum as institutional adoption grows',
                 'description': f'Major financial institutions are increasing their {coin_name} holdings, signaling confidence in the cryptocurrency market.',
                 'source': 'Crypto News',
-                'url': '#',
+                'url': 'https://www.coindesk.com',
                 'published_at': datetime.now().isoformat()
             },
             {
                 'title': f'{coin_name} network upgrade brings enhanced scalability',
                 'description': f'The latest {coin_name} protocol update promises faster transactions and lower fees.',
                 'source': 'Blockchain Today',
-                'url': '#',
+                'url': 'https://cointelegraph.com',
                 'published_at': (datetime.now() - timedelta(days=1)).isoformat()
             },
             {
                 'title': f'Market analysis: {coin_name} consolidates after recent rally',
                 'description': f'Technical indicators suggest {coin_name} is building support for the next move.',
                 'source': 'Trading View',
-                'url': '#',
+                'url': 'https://www.tradingview.com/news',
                 'published_at': (datetime.now() - timedelta(days=2)).isoformat()
             },
             {
                 'title': f'{coin_name} adoption increases in emerging markets',
                 'description': f'New partnerships are driving {coin_name} usage in developing economies.',
                 'source': 'Global Crypto',
-                'url': '#',
+                'url': 'https://decrypt.co',
                 'published_at': (datetime.now() - timedelta(days=3)).isoformat()
             },
             {
                 'title': f'Regulatory clarity boosts {coin_name} investor confidence',
                 'description': f'Positive regulatory developments are creating a favorable environment for {coin_name}.',
                 'source': 'Regulatory News',
-                'url': '#',
+                'url': 'https://www.bloomberg.com/crypto',
                 'published_at': (datetime.now() - timedelta(days=4)).isoformat()
             }
         ]

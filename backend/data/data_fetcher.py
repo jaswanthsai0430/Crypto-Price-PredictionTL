@@ -4,8 +4,9 @@ from datetime import datetime, timedelta
 import json
 import os
 import time
-from data.coingecko_api import CoinGeckoAPI
+from data.cryptocompare_api import CryptoCompareAPI
 from data.mock_data import MockDataGenerator
+from data.sentiment_fetcher import MarketSentimentFetcher
 
 class DataFetcher:
     def __init__(self, cache_dir='cache', use_mock_data=False):
@@ -26,8 +27,11 @@ class DataFetcher:
             'LINK': 'LINK'
         }
         
-        # CoinGecko API (free, reliable)
-        self.coingecko = CoinGeckoAPI()
+        # CryptoCompare API (free, 100k calls/month, full historical data)
+        self.api = CryptoCompareAPI()
+        
+        # Sentiment fetcher
+        self.sentiment_fetcher = MarketSentimentFetcher()
         
         # Mock data generator for fallback
         self.mock_generator = MockDataGenerator()
@@ -50,13 +54,13 @@ class DataFetcher:
         # Use mock data if enabled or API has failed
         if self.use_mock_data or self.api_failed:
             print(f"Using mock data for {coin} (API unavailable)")
-            days_map = {'1d': 1, '5d': 5, '1mo': 30, '3mo': 90, '6mo': 180, '1y': 365, '2y': 365, '5y': 365}
-            days = days_map.get(period, 365)
+            days_map = {'1d': 1, '5d': 5, '1mo': 30, '3mo': 90, '6mo': 180, '1y': 365, '2y': 730, '5y': 1825, 'max': 3650}
+            days = days_map.get(period, 1825)
             return self.mock_generator.generate_historical_data(coin, days=days)
         
         # Convert period to days
-        days_map = {'1d': 1, '5d': 5, '1mo': 30, '3mo': 90, '6mo': 180, '1y': 365, '2y': 365, '5y': 365}
-        days = days_map.get(period, 365)
+        days_map = {'1d': 1, '5d': 5, '1mo': 30, '3mo': 90, '6mo': 180, '1y': 365, '2y': 730, '5y': 1825, 'max': 3650}
+        days = days_map.get(period, 1825)
         
         for attempt in range(max_retries):
             try:
@@ -65,15 +69,15 @@ class DataFetcher:
                     print(f"Retry {attempt + 1}/{max_retries} for {coin} after {wait_time}s delay...")
                     time.sleep(wait_time)
                 
-                # Fetch from CoinGecko
-                data = self.coingecko.get_historical_data(coin, days=days)
+                # Fetch from CryptoCompare
+                data = self.api.get_historical_data(coin, days=days)
                 
                 if data is None or data.empty:
                     if attempt < max_retries - 1:
                         continue
                     raise ValueError(f"No data found for {coin}")
                 
-                print(f"Successfully fetched {len(data)} data points for {coin} from CoinGecko")
+                print(f"Successfully fetched {len(data)} data points for {coin} from CryptoCompare")
                 self.api_failed = False
                 return data
             
@@ -83,7 +87,7 @@ class DataFetcher:
                     time.sleep(1)  # Brief delay before retry
                     continue
                 else:
-                    print(f"CoinGecko API failed for {coin}. Switching to mock data mode.")
+                    print(f"CryptoCompare API failed for {coin}. Switching to mock data mode.")
                     self.api_failed = True
                     return self.mock_generator.generate_historical_data(coin, days=days)
         
@@ -112,8 +116,8 @@ class DataFetcher:
                     print(f"Retry {attempt + 1}/{max_retries} for {coin} price after {wait_time}s delay...")
                     time.sleep(wait_time)
                 
-                # Fetch from CoinGecko
-                data = self.coingecko.get_current_price(coin)
+                # Fetch from CryptoCompare
+                data = self.api.get_current_price(coin)
                 
                 if data is None:
                     if attempt < max_retries - 1:
@@ -129,7 +133,7 @@ class DataFetcher:
                     time.sleep(1)
                     continue
                 else:
-                    print(f"CoinGecko API failed for {coin} price. Using mock data.")
+                    print(f"CryptoCompare API failed for {coin} price. Using mock data.")
                     self.api_failed = True
                     return self.mock_generator.get_current_price(coin)
         
@@ -177,18 +181,92 @@ class DataFetcher:
         # Volume Moving Average
         data['Volume_MA'] = data['Volume'].rolling(window=20).mean()
         
+        # === NEW INDICATORS FOR PHASE 1 ===
+        
+        # ATR (Average True Range) - Volatility
+        high_low = data['High'] - data['Low']
+        high_close = np.abs(data['High'] - data['Close'].shift())
+        low_close = np.abs(data['Low'] - data['Close'].shift())
+        ranges = pd.concat([high_low, high_close, low_close], axis=1)
+        true_range = np.max(ranges, axis=1)
+        data['ATR'] = true_range.rolling(14).mean()
+        
+        # Stochastic Oscillator - Momentum
+        low_14 = data['Low'].rolling(window=14).min()
+        high_14 = data['High'].rolling(window=14).max()
+        data['Stochastic_K'] = 100 * ((data['Close'] - low_14) / (high_14 - low_14))
+        data['Stochastic_D'] = data['Stochastic_K'].rolling(window=3).mean()
+        
+        # OBV (On-Balance Volume) - Volume-Price relationship
+        obv = [0]
+        for i in range(1, len(data)):
+            if data['Close'].iloc[i] > data['Close'].iloc[i-1]:
+                obv.append(obv[-1] + data['Volume'].iloc[i])
+            elif data['Close'].iloc[i] < data['Close'].iloc[i-1]:
+                obv.append(obv[-1] - data['Volume'].iloc[i])
+            else:
+                obv.append(obv[-1])
+        data['OBV'] = obv
+        data['OBV_MA'] = data['OBV'].rolling(window=20).mean()
+        
+        # ADX (Average Directional Index) - Trend strength
+        plus_dm = data['High'].diff()
+        minus_dm = -data['Low'].diff()
+        plus_dm[plus_dm < 0] = 0
+        minus_dm[minus_dm < 0] = 0
+        
+        tr14 = true_range.rolling(14).sum()
+        plus_di = 100 * (plus_dm.rolling(14).sum() / tr14)
+        minus_di = 100 * (minus_dm.rolling(14).sum() / tr14)
+        
+        dx = 100 * np.abs(plus_di - minus_di) / (plus_di + minus_di)
+        data['ADX'] = dx.rolling(14).mean()
+        
+        # Fibonacci Retracement Levels (based on recent high/low)
+        period = 50
+        rolling_high = data['High'].rolling(window=period).max()
+        rolling_low = data['Low'].rolling(window=period).min()
+        diff = rolling_high - rolling_low
+        
+        data['Fib_0.236'] = rolling_high - 0.236 * diff
+        data['Fib_0.382'] = rolling_high - 0.382 * diff
+        data['Fib_0.618'] = rolling_high - 0.618 * diff
+        
+        # Distance from current price to key Fibonacci levels
+        data['Dist_Fib_382'] = (data['Close'] - data['Fib_0.382']) / data['Close'] * 100
+        
         return data
     
-    def prepare_data_for_model(self, coin, lookback=60):
+    def add_sentiment_data(self, df):
         """
-        Prepare data for ML model training/prediction
+        Merge Fear & Greed Index data into the dataset (PHASE 2)
+        """
+        sentiment_df = self.sentiment_fetcher.get_sentiment_data()
+        if sentiment_df is None:
+            return df
         
-        Args:
-            coin: Cryptocurrency symbol
-            lookback: Number of days to look back for features
+        # Merge on Date
+        # Ensure dates are in same format
+        df['Date_Str'] = df['Date'].dt.strftime('%Y-%m-%d')
+        sentiment_df['Date_Str'] = sentiment_df['Date'].dt.strftime('%Y-%m-%d')
         
-        Returns:
-            Prepared DataFrame with features
+        # We only need the score for now
+        sentiment_subset = sentiment_df[['Date_Str', 'FNG_Score']]
+        
+        # Merge
+        result = pd.merge(df, sentiment_subset, on='Date_Str', how='left')
+        
+        # Fill missing values (FNG might not have data for all dates)
+        result['FNG_Score'] = result['FNG_Score'].fillna(method='ffill').fillna(method='bfill')
+        
+        # Clean up
+        result = result.drop('Date_Str', axis=1)
+        
+        return result
+
+    def prepare_data_for_model(self, coin, lookback=60, include_sentiment=True):
+        """
+        Prepare data for ML model training/prediction (Phase 2 includes Sentiment)
         """
         # Use mock data if API has failed
         if self.use_mock_data or self.api_failed:
@@ -196,19 +274,21 @@ class DataFetcher:
             return self.mock_generator.prepare_data_for_model(coin)
         
         # Get historical data
-        df = self.get_historical_data(coin, period='2y', interval='1d')
+        df = self.get_historical_data(coin, period='5y', interval='1d')
         
         if df is None or df.empty:
             print(f"No data available, using mock data for {coin}")
             return self.mock_generator.prepare_data_for_model(coin)
         
-        # Calculate technical indicators
+        # Calculate technical indicators (Phase 1)
         df = self.calculate_technical_indicators(df)
         
-        # Drop NaN values
-        df.dropna(inplace=True)
+        # Add market sentiment (Phase 2)
+        if include_sentiment:
+            df = self.add_sentiment_data(df)
         
-        return df
+        # Return cleaned data
+        return df.dropna()
 
 if __name__ == "__main__":
     # Test the data fetcher
