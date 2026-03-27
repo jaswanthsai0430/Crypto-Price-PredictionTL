@@ -82,6 +82,15 @@
                 </ul>
             </nav>
 
+            <div class="sidebar-learn-nav">
+                <a href="index.html" class="sidebar-link active">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="learn.html" class="sidebar-link">
+                    <span>📚</span> Learn Crypto
+                </a>
+            </div>
+
             <div class="sidebar-footer">
                 <p>&copy; 2026 CP.AI</p>
             </div>
@@ -171,14 +180,48 @@
                     <!-- Chart Section -->
                     <div class="card chart-card glass-panel">
                         <div class="card-header">
-                            <h3>Price Action & Forecast</h3>
-                            <div class="chart-controls">
-                                <span class="legend-dot historical"></span> Historical
-                                <span class="legend-dot predicted"></span> AI Prediction (Next Day)
+                            <div class="pro-header-left">
+                                <h3 id="chart-symbol">BTC/USD</h3>
+                                <div class="timeframe-selector" id="timeframe-btns">
+                                    <button class="tf-btn" data-period="1d" data-interval="1h">1H</button>
+                                    <button class="tf-btn" data-period="5d" data-interval="4h">4H</button>
+                                    <button class="tf-btn active" data-period="1mo" data-interval="1d">1D</button>
+                                    <button class="tf-btn" data-period="1y" data-interval="1w">1W</button>
+                                </div>
+                            </div>
+                            <div class="chart-legend">
+                                <span class="legend-dot historical"></span> Price
+                                <span class="legend-dot predicted"></span> AI Forecast
                             </div>
                         </div>
+
+                        <!-- Pro Price Bar -->
+                        <div class="price-bar-pro">
+                            <div class="pro-stat">
+                                <span class="pro-label">Price</span>
+                                <span class="pro-value highlight" id="pro-price">--</span>
+                            </div>
+                            <div class="pro-stat">
+                                <span class="pro-label">24h Change</span>
+                                <span class="pro-value" id="pro-change">--</span>
+                            </div>
+                            <div class="pro-stat">
+                                <span class="pro-label">24h High</span>
+                                <span class="pro-value" id="pro-high">--</span>
+                            </div>
+                            <div class="pro-stat">
+                                <span class="pro-label">24h Low</span>
+                                <span class="pro-value" id="pro-low">--</span>
+                            </div>
+                            <div class="pro-stat hidden-mobile">
+                                <span class="pro-label">24h Volume</span>
+                                <span class="pro-value" id="pro-volume">--</span>
+                            </div>
+                        </div>
+
                         <div class="chart-wrapper">
                             <div id="priceChart"></div>
+                            <div id="volumeChart"></div>
                             <div class="loading-overlay" id="chart-loading">
                                 <div class="spinner"></div>
                             </div>

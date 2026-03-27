@@ -29,11 +29,14 @@
     "Fib_0.236",
     "Fib_0.382",
     "Fib_0.618",
-    "Dist_Fib_382"
+    "Dist_Fib_382",
+    "FNG_Score",
+    "FNG_Normalized",
+    "FNG_Trend"
   ],
-  "trained_date": "2026-02-13T18:08:52.823770",
-  "final_loss": 0.0012989405076950788,
-  "final_val_loss": 0.0010914035374298692,
-  "epochs_trained": 42,
-  "num_features": 27
+  "trained_date": "2026-03-23T17:45:38.272494",
+  "final_loss": 0.002805547323077917,
+  "final_val_loss": 0.001027591759338975,
+  "epochs_trained": 41,
+  "num_features": 30
 }

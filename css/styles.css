@@ -11,16 +11,19 @@
     /* Color Palette */
     --primary-color: #6c5ce7;
     --secondary-color: #a29bfe;
+    --accent-green: #00d764;
+    --accent-red: #ff4d6d;
 
-    --bg-dark: #0f1020;
-    --bg-sidebar: #15162c;
-    --bg-panel: rgba(30, 32, 60, 0.6);
+    --bg-dark: #0a0b1a;
+    --bg-sidebar: #0e0f22;
+    --bg-panel: rgba(18, 19, 42, 0.75);
 
-    --text-primary: #fff;
-    --text-secondary: #a0a0b8;
-    --text-muted: #6b6b8a;
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888aa;
+    --text-muted: #55557a;
 
-    --border-color: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-glow: rgba(108, 92, 231, 0.25);
 
     /* Layout */
     --sidebar-width: 260px;
@@ -97,21 +100,25 @@ body {
 }
 
 .nav-item {
-    padding: 12px 24px;
+    padding: 11px 24px;
     display: flex;
     align-items: center;
     cursor: pointer;
     transition: all 0.2s;
     border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0;
+    margin: 1px 8px 1px 0;
 }
 
 .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.03);
+    background: rgba(108, 92, 231, 0.08);
+    border-left-color: rgba(108, 92, 231, 0.4);
 }
 
 .nav-item.active {
-    background-color: rgba(108, 92, 231, 0.1);
+    background: linear-gradient(90deg, rgba(108, 92, 231, 0.18), rgba(108, 92, 231, 0.05));
     border-left-color: var(--primary-color);
+    box-shadow: inset 0 0 20px rgba(108, 92, 231, 0.05);
 }
 
 .nav-icon {
@@ -133,11 +140,43 @@ body {
     font-family: 'JetBrains Mono', monospace;
 }
 
-.sidebar-footer {
-    padding: 20px;
+/* Sidebar Page Navigation (Dashboard / Learn Crypto) */
+.sidebar-learn-nav {
+    padding: 12px 12px 4px;
     border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-link:hover {
+    background: rgba(108, 92, 231, 0.1);
+    color: var(--text-primary);
+}
+
+.sidebar-link.active {
+    background: linear-gradient(90deg, rgba(108, 92, 231, 0.2), rgba(108, 92, 231, 0.05));
+    color: var(--secondary-color);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+}
+
+.sidebar-footer {
+    padding: 14px 20px;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
@@ -243,10 +282,17 @@ body {
 .glass-panel {
     background: var(--bg-panel);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 24px;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(16px);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.glass-panel:hover {
+    border-color: var(--border-glow);
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08);
 }
 
 .card-header {
@@ -254,12 +300,16 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .card-header h3 {
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .badge {
@@ -277,18 +327,23 @@ body {
 
 /* Price Card Specifics */
 .price-content {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    padding: 12px 0;
 }
 
 .main-price {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2.6rem;
+    font-weight: 800;
     font-family: 'JetBrains Mono', monospace;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #e8e8f0 60%, #a29bfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .currency {
-    color: var(--primary-color);
+    -webkit-text-fill-color: var(--primary-color);
     margin-right: 2px;
 }
 
@@ -296,13 +351,43 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 5px;
+    margin-top: 8px;
 }
 
 .price-change {
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.market-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 0.9rem;
     font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* Sentiment styles */
@@ -659,4 +744,134 @@ body {
 .news-item {
     animation: newsSlideIn 0.5s ease forwards;
     opacity: 0;
+}
+
+/* ===================================
+   Pro Trading Terminal UI
+   =================================== */
+.pro-header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.pro-header-left h3 {
+    font-size: 1.2rem !important;
+    color: var(--text-primary) !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700 !important;
+    margin: 0 !important;
+}
+
+.timeframe-selector {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tf-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.tf-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tf-btn.active {
+    background: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Pro Price Bar */
+.price-bar-pro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding: 16px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pro-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pro-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pro-value {
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.pro-value.highlight {
+    font-size: 1.25rem;
+}
+
+.pro-value.positive {
+    color: var(--accent-green);
+}
+
+.pro-value.negative {
+    color: var(--accent-red);
+}
+
+/* Double Chart Layout */
+.chart-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+}
+
+#priceChart {
+    flex: 3;
+    min-height: 350px;
+}
+
+#volumeChart {
+    flex: 1;
+    min-height: 120px;
+    margin-top: -20px;
+}
+
+/* Utils */
+.hidden-mobile {
+    display: flex;
+}
+
+@media (max-width: 1200px) {
+    .hidden-mobile {
+        display: none;
+    }
+
+    .price-bar-pro {
+        gap: 16px;
+    }
 }

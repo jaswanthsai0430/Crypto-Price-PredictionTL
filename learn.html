@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP.AI - Learn Crypto</title>
+    <meta name="description"
+        content="Learn everything about cryptocurrency, trading, and how to make profits with CP.AI">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/learn.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="learn-page">
+
+    <!-- ===== TOP NAVBAR (replaces dashboard sidebar) ===== -->
+    <nav class="learn-navbar">
+        <div class="learn-navbar-logo">
+            <div class="logo-circle">
+                <i data-lucide="zap" class="logo-icon-svg"></i>
+            </div>
+            <span class="logo-text">CP.AI</span>
+        </div>
+        <div class="learn-navbar-center">
+            <span class="learn-navbar-title"><i data-lucide="book-open" class="title-icon"></i> Crypto Education
+                Hub</span>
+        </div>
+        <div class="learn-navbar-actions">
+            <a href="index.html" class="learn-nav-btn"><i data-lucide="arrow-left" class="nav-icon"></i> Back to
+                Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="learn-page-body">
+
+        <!-- Chapter Tab Navigation -->
+        <div class="learn-tabs">
+            <button class="learn-tab active" onclick="showChapter('intro')"><i data-lucide="globe" class="tab-icon"></i>
+                What is Crypto?</button>
+            <button class="learn-tab" onclick="showChapter('blockchain')"><i data-lucide="link" class="tab-icon"></i>
+                How it Works</button>
+            <button class="learn-tab" onclick="showChapter('trading')"><i data-lucide="trending-up"
+                    class="tab-icon"></i> Crypto Trading</button>
+            <button class="learn-tab" onclick="showChapter('profits')"><i data-lucide="dollar-sign"
+                    class="tab-icon"></i> Making Profits</button>
+            <button class="learn-tab" onclick="showChapter('strategies')"><i data-lucide="target" class="tab-icon"></i>
+                Strategies</button>
+            <button class="learn-tab" onclick="showChapter('tools')"><i data-lucide="layout-grid" class="tab-icon"></i>
+                Tools & Calculators</button>
+            <button class="learn-tab" onclick="showChapter('history')"><i data-lucide="calendar" class="tab-icon"></i>
+                Market History</button>
+            <button class="learn-tab" onclick="showChapter('glossary')"><i data-lucide="book" class="tab-icon"></i> Glossary</button>
+            <button class="learn-tab" onclick="showChapter('videos')"><i data-lucide="youtube" class="tab-icon"></i> Video Hub</button>
+        </div>
+
+        <!-- ===== CHAPTER 1: WHAT IS CRYPTO ===== -->
+        <div id="chapter-intro" class="chapter active-chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="bitcoin"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">What is Cryptocurrency?</h1>
+                    <p class="hero-subtitle">A digital revolution in how the world handles money</p>
+                </div>
+            </div>
+            <div class="learn-grid">
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="key"></i></div>
+                    <h3>Simple Definition</h3>
+                    <p>Cryptocurrency is <strong>digital money</strong> that exists only online. Unlike the rupee or
+                        dollar that your government controls, crypto is controlled by <strong>mathematics and
+                            code</strong> — not banks or governments.</p>
+                    <div class="analogy-box">
+                        <span class="analogy-label"><i data-lucide="lightbulb" class="inline-icon"></i> Think of it like
+                            this:</span>
+                        <p>Imagine sending an email instead of a physical letter. Crypto is like sending "digital cash"
+                            directly to someone — instantly, anywhere in the world — without any bank in between.</p>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="building-2"></i></div>
+                    <h3>Why was it Created?</h3>
+                    <p>In 2008, a financial crisis wiped out millions of people because banks failed. A mysterious
+                        developer named <strong>"Satoshi Nakamoto"</strong> created Bitcoin in 2009 to give people
+                        financial freedom — a way to hold and send money without trusting a bank.</p>
+                    <div class="highlight-stat">
+                        <span class="stat-number">2009</span>
+                        <span class="stat-desc">Year Bitcoin was born</span>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="globe"></i></div>
+                    <h3>What is it Used For?</h3>
+                    <ul class="use-case-list">
+                        <li><span class="use-icon"><i data-lucide="send"></i></span> <strong>Sending Money
+                                Globally</strong> — Transfer funds
+                            internationally in seconds with near-zero fees</li>
+                        <li><span class="use-icon"><i data-lucide="shopping-cart"></i></span> <strong>Online
+                                Payments</strong> — Pay for goods and
+                            services on platforms that accept crypto</li>
+                        <li><span class="use-icon"><i data-lucide="trending-up"></i></span> <strong>Investment &
+                                Trading</strong> — Buy low, sell high
+                            — just like stocks but 24/7</li>
+                        <li><span class="use-icon"><i data-lucide="lock"></i></span> <strong>Store of Value</strong> —
+                            "Digital Gold" — some
+                            people hold Bitcoin as a long-term savings</li>
+                        <li><span class="use-icon"><i data-lucide="cpu"></i></span> <strong>Decentralized Finance
+                                (DeFi)</strong> — Earn
+                            interest, take loans — without a bank</li>
+                    </ul>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="coins"></i></div>
+                    <h3>Top Cryptocurrencies</h3>
+                    <div class="coin-grid-learn">
+                        <div class="coin-item-learn"><span class="coin-sym">₿</span>
+                            <div><strong>Bitcoin (BTC)</strong><small>The original, "Digital Gold"</small></div>
+                        </div>
+                        <div class="coin-item-learn"><span class="coin-sym">Ξ</span>
+                            <div><strong>Ethereum (ETH)</strong><small>Powers smart contracts & DeFi</small></div>
+                        </div>
+                        <div class="coin-item-learn"><span class="coin-sym">◎</span>
+                            <div><strong>Solana (SOL)</strong><small>Ultra-fast, low-cost blockchain</small></div>
+                        </div>
+                        <div class="coin-item-learn"><span class="coin-sym">Ð</span>
+                            <div><strong>Dogecoin (DOGE)</strong><small>Started as a meme, went viral</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 2: BLOCKCHAIN ===== -->
+        <div id="chapter-blockchain" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="link"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">How Does Blockchain Work?</h1>
+                    <p class="hero-subtitle">The technology that makes crypto possible</p>
+                </div>
+            </div>
+            <div class="learn-grid">
+                <div class="learn-card glass-panel full-width">
+                    <div class="card-icon"><i data-lucide="book"></i></div>
+                    <h3>The Public Ledger Explained</h3>
+                    <p>A blockchain is like a <strong>giant public notebook</strong> that everyone can see but no one
+                        can erase. Every time someone sends crypto, a new entry is added. This notebook is copied on
+                        thousands of computers worldwide.</p>
+                    <div class="blockchain-visual">
+                        <div class="block">
+                            <div class="block-label">Block 1</div>
+                            <div class="block-content">Jaswa → Ravi: 0.5 BTC</div>
+                        </div>
+                        <div class="chain-link"><i data-lucide="arrow-right"></i></div>
+                        <div class="block">
+                            <div class="block-label">Block 2</div>
+                            <div class="block-content">Ravi → Priya: 0.2 BTC</div>
+                        </div>
+                        <div class="chain-link"><i data-lucide="arrow-right"></i></div>
+                        <div class="block">
+                            <div class="block-label">Block 3</div>
+                            <div class="block-content">Priya → Sam: 0.1 BTC</div>
+                        </div>
+                        <div class="chain-link"><i data-lucide="arrow-right"></i></div>
+                        <div class="block new-block">
+                            <div class="block-label">New Block</div>
+                            <div class="block-content">Pending...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="shield-check"></i></div>
+                    <h3>Why Can't it be Hacked?</h3>
+                    <p>To change one block, a hacker would need to change <strong>every block after it</strong> on
+                        <strong>51% of all computers</strong> simultaneously. With thousands of nodes worldwide, this is
+                        practically impossible.
+                    </p>
+                    <div class="security-levels">
+                        <div class="sec-level"><span><i data-lucide="check-circle" class="inline-icon green"></i></span>
+                            Immutable (Unchangeable)</div>
+                        <div class="sec-level"><span><i data-lucide="check-circle" class="inline-icon green"></i></span>
+                            Decentralized (No single point of failure)</div>
+                        <div class="sec-level"><span><i data-lucide="check-circle" class="inline-icon green"></i></span>
+                            Transparent (Everyone can verify)</div>
+                        <div class="sec-level"><span><i data-lucide="check-circle" class="inline-icon green"></i></span>
+                            Encrypted (Military-grade security)</div>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="hammer"></i></div>
+                    <h3>What is Mining?</h3>
+                    <p>Miners are computers that <strong>verify transactions</strong> and add them to the blockchain. As
+                        a reward, they receive new cryptocurrency.</p>
+                    <div class="analogy-box">
+                        <span class="analogy-label"><i data-lucide="lightbulb" class="inline-icon"></i> Analogy:</span>
+                        <p>Think of miners like <strong>bank employees</strong> who verify each transaction — except
+                            they are paid in crypto, and anyone in the world can be a miner.</p>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="wallet"></i></div>
+                    <h3>What is a Crypto Wallet?</h3>
+                    <p>A crypto wallet stores your <strong>private keys</strong> — the password that proves you own your
+                        crypto.</p>
+                    <div class="wallet-types">
+                        <div class="wallet-type"><span><i data-lucide="smartphone" class="inline-icon"></i></span>
+                            <strong>Hot Wallets</strong> — Apps like MetaMask
+                            (online)
+                        </div>
+                        <div class="wallet-type"><span><i data-lucide="lock" class="inline-icon"></i></span>
+                            <strong>Cold Wallets</strong> — Hardware devices
+                            (offline, safest)
+                        </div>
+                        <div class="wallet-type"><span><i data-lucide="landmark" class="inline-icon"></i></span>
+                            <strong>Exchange Wallets</strong> — Coinbase, Binance
+                            (managed for you)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 3: TRADING ===== -->
+        <div id="chapter-trading" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="trending-up"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">What is Crypto Trading?</h1>
+                    <p class="hero-subtitle">Buy low, sell high — the core principle of all markets</p>
+                </div>
+            </div>
+            <div class="learn-grid">
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="repeat"></i></div>
+                    <h3>Trading vs Investing</h3>
+                    <div class="compare-table">
+                        <div class="compare-header"><span>Trading</span><span>Investing</span></div>
+                        <div class="compare-row"><span>Short-term (hours/days)</span><span>Long-term
+                                (months/years)</span></div>
+                        <div class="compare-row"><span>High frequency of trades</span><span>Buy and hold strategy</span>
+                        </div>
+                        <div class="compare-row"><span>More active, more risk</span><span>Passive, less daily
+                                stress</span></div>
+                        <div class="compare-row"><span>Profits from price swings</span><span>Profits from long-term
+                                growth</span></div>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="bar-chart-2"></i></div>
+                    <h3>Reading a Price Chart</h3>
+                    <p>A <strong>candlestick chart</strong> (like the one on our dashboard!) shows the price movement
+                        over a period of time.</p>
+                    <div class="candle-explain">
+                        <div class="candle-demo">
+                            <div class="candle-green">
+                                <div class="wick-top"></div>
+                                <div class="candle-body green"></div>
+                                <div class="wick-bottom"></div>
+                            </div>
+                            <div class="candle-red">
+                                <div class="wick-top"></div>
+                                <div class="candle-body red"></div>
+                                <div class="wick-bottom"></div>
+                            </div>
+                        </div>
+                        <div class="candle-legend">
+                            <div><span class="dot green-dot"></span> Green = Price went UP (Bullish)</div>
+                            <div><span class="dot red-dot"></span> Red = Price went DOWN (Bearish)</div>
+                            <div>Tall wick = High volatility</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="building-2"></i></div>
+                    <h3>Where Do You Trade?</h3>
+                    <div class="exchange-list">
+                        <div class="exchange-item popular"><span>1️⃣</span>
+                            <div><strong>Binance</strong><small>Largest exchange globally, low fees</small></div><span
+                                class="tag">Popular</span>
+                        </div>
+                        <div class="exchange-item"><span>2️⃣</span>
+                            <div><strong>Coinbase</strong><small>Best for beginners</small></div>
+                        </div>
+                        <div class="exchange-item"><span>3️⃣</span>
+                            <div><strong>WazirX / CoinDCX</strong><small>Popular in India (INR support)</small></div>
+                        </div>
+                        <div class="exchange-item"><span>4️⃣</span>
+                            <div><strong>Kraken</strong><small>Trusted, advanced tools</small></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="learn-card glass-panel">
+                    <div class="card-icon"><i data-lucide="clipboard-list"></i></div>
+                    <h3>Types of Orders</h3>
+                    <div class="order-types">
+                        <div class="order-item"><strong class="order-name">Market Order</strong>
+                            <p>Buy/sell immediately at the current price.</p>
+                        </div>
+                        <div class="order-item"><strong class="order-name">Limit Order</strong>
+                            <p>Set your own price. Trade only happens when price hits your target.</p>
+                        </div>
+                        <div class="order-item"><strong class="order-name">Stop-Loss Order</strong>
+                            <p>Auto-sell if price drops below a level you set. Protects from heavy losses.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 4: PROFITS ===== -->
+        <div id="chapter-profits" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="dollar-sign"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">How to Make Profits in Crypto</h1>
+                    <p class="hero-subtitle">Multiple legitimate ways to grow your money in crypto markets</p>
+                </div>
+            </div>
+            <div class="learn-grid">
+                <div class="profit-method-card glass-panel">
+                    <div class="method-number">01</div>
+                    <div class="card-icon"><i data-lucide="activity"></i></div>
+                    <h3>Buy & Hold (HODL)</h3>
+                    <p>Buy a coin you believe in, hold for months or years, and sell when it has grown significantly.
+                    </p>
+                    <div class="example-box"><strong>📌 Real Example:</strong>
+                        <p>₹10,000 in Bitcoin in 2020 grew to ₹65,000+ by 2021 — a <strong class="profit-text">+550%
+                                return</strong>.</p>
+                    </div>
+                    <div class="risk-reward"><span class="risk low">Risk: Medium</span><span class="reward high">Reward:
+                            Very High</span></div>
+                </div>
+                <div class="profit-method-card glass-panel">
+                    <div class="method-number">02</div>
+                    <div class="card-icon"><i data-lucide="bar-chart-2"></i></div>
+                    <h3>Day Trading</h3>
+                    <p>Buy and sell within the same day to profit from small price movements. Requires skill and time.
+                    </p>
+                    <div class="example-box"><strong>📌 Example:</strong>
+                        <p>BTC drops from $65,000 to $63,000 in morning, you buy. By afternoon it's $64,800. That's a
+                            <strong class="profit-text">$1,800 profit per BTC</strong>.
+                        </p>
+                    </div>
+                    <div class="risk-reward"><span class="risk high">Risk: High</span><span class="reward high">Reward:
+                            High</span></div>
+                </div>
+                <div class="profit-method-card glass-panel">
+                    <div class="method-number">03</div>
+                    <div class="card-icon"><i data-lucide="clock"></i></div>
+                    <h3>Swing Trading</h3>
+                    <p>Hold for a few days to weeks to capture a "swing" in price. Less stressful than day trading.</p>
+                    <div class="example-box"><strong>📌 Strategy:</strong>
+                        <p>Use CP.AI's prediction — if AI predicts ETH will rise next week, buy today, sell after the
+                            rise!</p>
+                    </div>
+                    <div class="risk-reward"><span class="risk med">Risk: Medium</span><span class="reward high">Reward:
+                            Medium-High</span></div>
+                </div>
+                <div class="profit-method-card glass-panel">
+                    <div class="method-number">04</div>
+                    <div class="card-icon"><i data-lucide="sprout"></i></div>
+                    <h3>Staking & Yield Farming</h3>
+                    <p>Lock up your crypto in a protocol to earn <strong>interest (APY)</strong> — like a savings
+                        account but for crypto.</p>
+                    <div class="example-box"><strong>📌 Example:</strong>
+                        <p>Stake 10 SOL at 7% APY. After a year: <strong class="profit-text">10.7 SOL</strong> without
+                            ever trading.</p>
+                    </div>
+                    <div class="risk-reward"><span class="risk low">Risk: Low–Medium</span><span
+                            class="reward med">Reward: Steady</span></div>
+                </div>
+                <div class="profit-method-card glass-panel">
+                    <div class="method-number">05</div>
+                    <div class="card-icon"><i data-lucide="refresh-cw"></i></div>
+                    <h3>Dollar-Cost Averaging (DCA)</h3>
+                    <p>Invest a fixed amount every week/month regardless of price. Averages out your buy price over
+                        time.</p>
+                    <div class="example-box">
+                        <strong>📌 DCA Example (₹1,000/month):</strong>
+                        <table class="dca-table">
+                            <tr>
+                                <th>Month</th>
+                                <th>Price</th>
+                                <th>BTC Bought</th>
+                            </tr>
+                            <tr>
+                                <td>Jan</td>
+                                <td>₹40L</td>
+                                <td>0.00250</td>
+                            </tr>
+                            <tr>
+                                <td>Feb</td>
+                                <td>₹35L</td>
+                                <td>0.00286</td>
+                            </tr>
+                            <tr>
+                                <td>Mar</td>
+                                <td>₹45L</td>
+                                <td>0.00222</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>Avg: ₹40L</td>
+                                <td>0.00758</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="risk-reward"><span class="risk low">Risk: Low</span><span class="reward med">Reward:
+                            Long-term</span></div>
+                </div>
+                <div class="profit-method-card glass-panel warning-card">
+                    <div class="card-icon"><i data-lucide="alert-triangle"></i></div>
+                    <h3>Golden Rules of Crypto</h3>
+                    <div class="golden-rules">
+                        <div class="rule"><span>1️⃣</span> <strong>Never invest more than you can afford to
+                                lose.</strong></div>
+                        <div class="rule"><span>2️⃣</span> <strong>DYOR</strong> — Do Your Own Research, don't follow
+                            hype blindly.</div>
+                        <div class="rule"><span>3️⃣</span> <strong>Use Stop-Loss</strong> — always protect your
+                            downside.</div>
+                        <div class="rule"><span>4️⃣</span> <strong>Diversify</strong> — don't put all eggs in one
+                            basket.</div>
+                        <div class="rule"><span>5️⃣</span> <strong>Beware of Scams</strong> — if it sounds too good, it
+                            usually is.</div>
+                        <div class="rule"><span>6️⃣</span> <strong>Use CP.AI Predictions</strong> — AI insights powered
+                            by 27 indicators! 😉</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 5: STRATEGIES ===== -->
+        <div id="chapter-strategies" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="target"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Trading Strategies & Indicators</h1>
+                    <p class="hero-subtitle">Tools professional traders use — and that our AI is trained on</p>
+                </div>
+            </div>
+            <div class="learn-grid">
+                <div class="indicator-card glass-panel">
+                    <div class="indicator-badge"><span>RSI</span></div>
+                    <h3>RSI (Relative Strength Index)</h3>
+                    <p>Measures if a coin is <strong>overbought or oversold</strong> on a scale of 0–100.</p>
+                    <div class="indicator-gauge">
+                        <div class="gauge-bar">
+                            <div class="zone red-zone">Oversold</div>
+                            <div class="zone neutral-zone">Neutral</div>
+                            <div class="zone green-zone">Overbought</div>
+                        </div>
+                        <div class="gauge-labels"><span>0</span><span>30</span><span>70</span><span>100</span></div>
+                    </div>
+                    <div class="indicator-signal">
+                        <div class="signal buy">📗 RSI &lt; 30 → Likely to rise → Buy Signal</div>
+                        <div class="signal sell">📕 RSI &gt; 70 → Likely to fall → Sell Signal</div>
+                    </div>
+                </div>
+                <div class="indicator-card glass-panel">
+                    <div class="indicator-badge"><span>MACD</span></div>
+                    <h3>MACD (Moving Avg Convergence)</h3>
+                    <p>Shows the <strong>momentum and direction</strong> of a trend.</p>
+                    <div class="indicator-signal">
+                        <div class="signal buy">📗 MACD crosses above Signal → BUY</div>
+                        <div class="signal sell">📕 MACD crosses below Signal → SELL</div>
+                    </div>
+                    <div class="analogy-box">
+                        <p>Used as one of CP.AI's 27 features for predicting tomorrow's direction.</p>
+                    </div>
+                </div>
+                <div class="indicator-card glass-panel">
+                    <div class="indicator-badge"><span>BB</span></div>
+                    <h3>Bollinger Bands</h3>
+                    <p>Two bands around the price that represent <strong>volatility boundaries</strong>.</p>
+                    <div class="indicator-signal">
+                        <div class="signal buy">📗 Price touches Lower Band → Potential Bounce (Buy)</div>
+                        <div class="signal sell">📕 Price touches Upper Band → Potential Drop (Sell)</div>
+                    </div>
+                </div>
+                <div class="indicator-card glass-panel">
+                    <div class="indicator-badge"><span>ATR</span></div>
+                    <h3>ATR (Average True Range)</h3>
+                    <p>Measures how <strong>volatile</strong> a coin is on average. Helps you set smart stop-loss
+                        levels.</p>
+                    <div class="indicator-signal">
+                        <div class="signal buy">🟡 High ATR → Volatile market — trade with care</div>
+                        <div class="signal sell">🟢 Low ATR → Calm market — safer to trade</div>
+                    </div>
+                </div>
+                <div class="indicator-card glass-panel">
+                    <div class="indicator-badge"><span>FIB</span></div>
+                    <h3>Fibonacci Retracement</h3>
+                    <p>Uses key ratios (<strong>23.6%, 38.2%, 61.8%</strong>) to predict support and resistance zones.
+                    </p>
+                    <div class="indicator-signal">
+                        <div class="signal buy">📗 Price pulls back to 61.8% level → Strong buy zone</div>
+                        <div class="signal sell">📕 Price fails at 23.6% level → Bearish signal</div>
+                    </div>
+                </div>
+                <div class="indicator-card glass-panel">
+                    <div class="indicator-badge"><span>FNG</span></div>
+                    <h3>Fear & Greed Index</h3>
+                    <p>Measures market <strong>psychology</strong> on a scale of 0 (Extreme Fear) to 100 (Extreme
+                        Greed).</p>
+                    <div class="fng-scale">
+                        <div class="fng-zone fear">0–24<br>Extreme Fear</div>
+                        <div class="fng-zone fear-medium">25–49<br>Fear</div>
+                        <div class="fng-zone neutral-fng">50<br>Neutral</div>
+                        <div class="fng-zone greed-medium">51–74<br>Greed</div>
+                        <div class="fng-zone greed">75–100<br>Extreme Greed</div>
+                    </div>
+                    <div class="indicator-signal">
+                        <div class="signal buy">📗 Extreme Fear → Often the best time to buy!</div>
+                        <div class="signal sell">📕 Extreme Greed → Market may be overheated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 6: TOOLS & CALCULATORS ===== -->
+        <div id="chapter-tools" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="calculator"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Crypto Tools & Calculators</h1>
+                    <p class="hero-subtitle">Plan your investments and track market psychology in real-time</p>
+                </div>
+            </div>
+
+            <div class="learn-grid">
+                <!-- DCA Calculator -->
+                <div class="calc-card glass-panel full-width">
+                    <div class="card-header-with-icon">
+                        <div class="card-icon"><i data-lucide="trending-up"></i></div>
+                        <h3>DCA (Dollar Cost Averaging) Simulator</h3>
+                    </div>
+                    <p class="calc-desc">See how much your money would have grown if you invested a small amount
+                        regularly instead of all at once.</p>
+
+                    <div class="dca-calculator-ui">
+                        <div class="calc-inputs">
+                            <div class="input-group">
+                                <label>Invest Amount (₹)</label>
+                                <input type="number" id="dca-amount" value="5000" step="500">
+                            </div>
+                            <div class="input-group">
+                                <label>Frequency</label>
+                                <select id="dca-frequency">
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly" selected>Monthly</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Duration (Years)</label>
+                                <div class="range-container">
+                                    <input type="range" id="dca-years" min="1" max="5" value="3"
+                                        oninput="document.getElementById('years-label').innerText = this.value + ' Years'">
+                                    <span id="years-label">3 Years</span>
+                                </div>
+                            </div>
+                            <button class="calc-btn" onclick="runDCASimulation()">Calculate Growth 🚀</button>
+                        </div>
+
+                        <div class="calc-results" id="dca-results">
+                            <div class="result-item">
+                                <span class="res-label">Total Invested</span>
+                                <span class="res-value" id="res-invested">₹0</span>
+                            </div>
+                            <div class="result-item highlight">
+                                <span class="res-label">Current Value</span>
+                                <span class="res-value" id="res-value">₹0</span>
+                            </div>
+                            <div class="result-item profit">
+                                <span class="res-label">Total Profit</span>
+                                <span class="res-value" id="res-profit">+0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Fear & Greed Gauge -->
+                <div class="gauge-card glass-panel">
+                    <div class="card-icon"><i data-lucide="brain"></i></div>
+                    <h3>Live Market Psychology</h3>
+                    <p>The Fear & Greed Index shows the current "mood" of the market to help you avoid emotional
+                        decisions.</p>
+
+                    <div class="fng-gauge-container">
+                        <svg class="fng-gauge" viewBox="0 0 200 120">
+                            <path class="gauge-bg" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke-width="12" />
+                            <path id="gauge-fill" class="gauge-fill" d="M20,100 A80,80 0 0,1 180,100" fill="none"
+                                stroke-width="12" />
+                            <line id="gauge-needle" class="gauge-needle" x1="100" y1="100" x2="40" y2="60"
+                                stroke-width="4" />
+                            <circle cx="100" cy="100" r="6" fill="#fff" />
+                        </svg>
+                        <div class="fng-value-display">
+                            <span id="fng-val">--</span>
+                            <small id="fng-label">Loading...</small>
+                        </div>
+                    </div>
+
+                    <div class="fng-advice" id="fng-advice">
+                        "Wait for the data to load..."
+                    </div>
+                </div>
+
+                <!-- Profit/Loss Calculator -->
+                <div class="calc-card glass-panel">
+                    <div class="card-icon"><i data-lucide="scale"></i></div>
+                    <h3>Profit/Loss Estimator</h3>
+                    <div class="pl-calc-inputs">
+                        <div class="input-group">
+                            <label>Buy Price ($)</label>
+                            <input type="number" id="pl-buy" placeholder="e.g. 60000">
+                        </div>
+                        <div class="input-group">
+                            <label>Sell Price ($)</label>
+                            <input type="number" id="pl-sell" placeholder="e.g. 75000" oninput="calculatePL()">
+                        </div>
+                        <div class="pl-res" id="pl-res-text">
+                            Enter prices to see ROI
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 7: MARKET HISTORY ===== -->
+        <div id="chapter-history" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="calendar"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Crypto Market History</h1>
+                    <p class="hero-subtitle">From a whitepaper to a trillion-dollar asset class</p>
+                </div>
+            </div>
+
+            <div class="history-timeline">
+                <div class="timeline-line"></div>
+
+                <div class="timeline-event glass-panel">
+                    <div class="event-year">2009</div>
+                    <div class="event-marker"></div>
+                    <h3>The Genesis Block</h3>
+                    <p>Satoshi Nakamoto mines the first block of Bitcoin. The message "Chancellor on brink of second
+                        bailout for banks" is embedded in the code.</p>
+                </div>
+
+                <div class="timeline-event glass-panel left">
+                    <div class="event-year">2010</div>
+                    <div class="event-marker"></div>
+                    <h3>Bitcoin Pizza Day</h3>
+                    <p>A programmer bought two pizzas for 10,000 BTC. It was the first time Bitcoin was used as a medium
+                        of exchange. Today, those pizzas would be worth millions!</p>
+                </div>
+
+                <div class="timeline-event glass-panel">
+                    <div class="event-year">2013</div>
+                    <div class="event-marker"></div>
+                    <h3>The $1,000 Milestone</h3>
+                    <p>Bitcoin's price hits $1,000 for the first time. Major media outlets begin to pay attention to the
+                        "Magic Internet Money."</p>
+                </div>
+
+                <div class="timeline-event glass-panel left">
+                    <div class="event-year">2017</div>
+                    <div class="event-marker"></div>
+                    <h3>ICO Mania & $20k</h3>
+                    <p>Ethereum enables "Initial Coin Offerings." Bitcoin skyrockets to nearly $20,000 before a major
+                        market correction in 2018.</p>
+                </div>
+
+                <div class="timeline-event glass-panel">
+                    <div class="event-year">2021</div>
+                    <div class="event-marker"></div>
+                    <h3>Adoption & New ATH</h3>
+                    <p>El Salvador makes Bitcoin legal tender. Institutional interest pushes BTC to a record high of
+                        $69,000.</p>
+                </div>
+
+                <div class="timeline-event glass-panel left">
+                    <div class="event-year">2024</div>
+                    <div class="event-marker"></div>
+                    <h3>The ETF Era</h3>
+                    <p>The SEC approves Spot Bitcoin ETFs, allowing billions in institutional capital to flow into the
+                        market safely.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAPTER 8: GLOSSARY ===== -->
+        <div id="chapter-glossary" class="chapter">
+            <div class="chapter-hero glass-panel">
+                <div class="hero-icon"><i data-lucide="book"></i></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Crypto Glossary</h1>
+                    <p class="hero-subtitle">All the jargon you'll hear — explained simply</p>
+                </div>
+            </div>
+            <div class="glossary-search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="glossary-search" placeholder="Search a term..." oninput="filterGlossary()" />
+            </div>
+            <div class="glossary-grid" id="glossary-grid"></div>
+        </div>
+
+        <!-- ===== CHAPTER 9: VIDEO HUB ===== -->
+        <div id="chapter-videos" class="chapter">
+    
+            <div class="video-section-title">Beginner Fundamentals</div>
+            <div class="video-grid">
+
+                <div class="glass-panel video-card">
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/bBC-nXj3Ng4"
+                            title="How does a blockchain work"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card-info">
+                        <h3>How Blockchain Works</h3>
+                        <p>A simple, visual explanation of the core technology powering all cryptocurrencies.</p>
+                        <span class="video-tag tag-beginner">Beginner</span>
+                    </div>
+                </div>
+
+                <div class="glass-panel video-card">
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/SSo_EIwHSd4"
+                            title="But how does Bitcoin actually work?"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card-info">
+                        <h3>But how does Bitcoin actually work?</h3>
+                        <p>3Blue1Brown's legendary breakdown of the math and cryptography behind Bitcoin.</p>
+                        <span class="video-tag tag-beginner">Beginner</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="video-section-title">Trading & Technical Analysis</div>
+            <div class="video-grid">
+
+                <div class="glass-panel video-card">
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/08R_TJhAOGo"
+                            title="Crypto Technical Analysis for Beginners"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card-info">
+                        <h3>Technical Analysis Basics</h3>
+                        <p>Learn to read candlestick charts, identify support & resistance, and spot key patterns.</p>
+                        <span class="video-tag tag-intermediate">Intermediate</span>
+                    </div>
+                </div>
+
+                <div class="glass-panel video-card">
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/p7HKvqRI_Bo"
+                            title="RSI Indicator Explained"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card-info">
+                        <h3>Mastering the RSI Indicator</h3>
+                        <p>How to use the Relative Strength Index to find overbought and oversold conditions.</p>
+                        <span class="video-tag tag-intermediate">Intermediate</span>
+                    </div>
+                </div>
+
+                <div class="glass-panel video-card">
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/mboYr9fIq4k"
+                            title="DON'T GET REKT - Crypto Risk Management 101"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-card-info">
+                        <h3>Risk Management in Crypto</h3>
+                        <p>The most critical skill: protecting your capital with stop-losses and position sizing.</p>
+                        <span class="video-tag tag-advanced">Advanced</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div><!-- end learn-page-body -->
+
+    <script src="js/learn.js"></script>
+</body>
+
+</html>

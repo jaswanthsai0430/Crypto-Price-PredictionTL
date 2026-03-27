@@ -1,0 +1,109 @@
+{
+  "timestamp": "2026-03-23T19:31:59.808636",
+  "total_coins": 10,
+  "successful": 10,
+  "failed": 0,
+  "total_duration_seconds": 13828.016118526459,
+  "results": {
+    "BTC": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.0027269937563687563,
+      "final_val_loss": 0.0012427271576598287,
+      "epochs_trained": 100.0,
+      "duration": 3122.8553137779236,
+      "current_price": 68660.32,
+      "predicted_price": 70651.55929059684
+    },
+    "ETH": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.003805181011557579,
+      "final_val_loss": 0.00379948946647346,
+      "epochs_trained": 35.0,
+      "duration": 625.5268971920013,
+      "current_price": 2051.77,
+      "predicted_price": 1591.8504289367795
+    },
+    "SOLANA": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.0050089554861187935,
+      "final_val_loss": 0.001958349486812949,
+      "epochs_trained": 51.0,
+      "duration": 1578.2997221946716,
+      "current_price": 90.69,
+      "predicted_price": 88.48424907377363
+    },
+    "BNB": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.001980777829885483,
+      "final_val_loss": 0.016413448378443718,
+      "epochs_trained": 35.0,
+      "duration": 805.0565142631531,
+      "current_price": 642.54,
+      "predicted_price": 710.5348384618759
+    },
+    "DOGE": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.002805547323077917,
+      "final_val_loss": 0.001027591759338975,
+      "epochs_trained": 41.0,
+      "duration": 1422.7827363014221,
+      "current_price": 0.0928,
+      "predicted_price": 0.06942064485564829
+    },
+    "XRP": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.002706033643335104,
+      "final_val_loss": 0.002181959804147482,
+      "epochs_trained": 86.0,
+      "duration": 1370.970264673233,
+      "current_price": 1.413,
+      "predicted_price": 1.5038721324920656
+    },
+    "ADA": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.004080538637936115,
+      "final_val_loss": 0.0009850128553807735,
+      "epochs_trained": 33.0,
+      "duration": 695.847437620163,
+      "current_price": 0.2594,
+      "predicted_price": 0.35924655049443244
+    },
+    "AVAX": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.003940248396247625,
+      "final_val_loss": 0.00038982092519290745,
+      "epochs_trained": 39.0,
+      "duration": 1375.8758976459503,
+      "current_price": 9.454,
+      "predicted_price": 11.737378676485271
+    },
+    "DOT": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.0034950831905007362,
+      "final_val_loss": 0.00032058736542239785,
+      "epochs_trained": 45.0,
+      "duration": 1445.1860175132751,
+      "current_price": 1.466,
+      "predicted_price": 3.461392530441284
+    },
+    "LINK": {
+      "status": "SUCCESS",
+      "samples": 1777.0,
+      "final_loss": 0.002308925846591592,
+      "final_val_loss": 0.0009575423900969326,
+      "epochs_trained": 48.0,
+      "duration": 1385.6153173446655,
+      "current_price": 9.045,
+      "predicted_price": 6.994706356130541
+    }
+  }
+}

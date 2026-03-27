@@ -7,6 +7,7 @@ import time
 from data.cryptocompare_api import CryptoCompareAPI
 from data.mock_data import MockDataGenerator
 from data.sentiment_fetcher import MarketSentimentFetcher
+from data.external_fetcher import ExternalMarketFetcher
 
 class DataFetcher:
     def __init__(self, cache_dir='cache', use_mock_data=False):
@@ -33,6 +34,9 @@ class DataFetcher:
         # Sentiment fetcher
         self.sentiment_fetcher = MarketSentimentFetcher()
         
+        # External market fetcher (S&P 500, DXY, Gold)
+        self.external_fetcher = ExternalMarketFetcher()
+        
         # Mock data generator for fallback
         self.mock_generator = MockDataGenerator()
         self.use_mock_data = use_mock_data
@@ -40,12 +44,12 @@ class DataFetcher:
     
     def get_historical_data(self, coin, period='1y', interval='1d', max_retries=2):
         """
-        Fetch historical price data using CoinGecko API
+        Fetch historical price data using CryptoCompare API
         
         Args:
             coin: Cryptocurrency symbol (BTC, ETH, SOLANA)
             period: Data period (converted to days)
-            interval: Data interval (not used with CoinGecko)
+            interval: Data interval ('1d', '1h', '4h')
             max_retries: Maximum number of retry attempts
         
         Returns:
@@ -69,15 +73,15 @@ class DataFetcher:
                     print(f"Retry {attempt + 1}/{max_retries} for {coin} after {wait_time}s delay...")
                     time.sleep(wait_time)
                 
-                # Fetch from CryptoCompare
-                data = self.api.get_historical_data(coin, days=days)
+                # Fetch from CryptoCompare with interval support
+                data = self.api.get_historical_data(coin, days=days, interval=interval)
                 
                 if data is None or data.empty:
                     if attempt < max_retries - 1:
                         continue
                     raise ValueError(f"No data found for {coin}")
                 
-                print(f"Successfully fetched {len(data)} data points for {coin} from CryptoCompare")
+                print(f"Successfully fetched {len(data)} data points for {coin} from CryptoCompare ({interval})")
                 self.api_failed = False
                 return data
             
@@ -239,32 +243,75 @@ class DataFetcher:
     
     def add_sentiment_data(self, df):
         """
-        Merge Fear & Greed Index data into the dataset (PHASE 2)
+        Merge Fear & Greed Index data into the dataset (PHASE 11 enhanced).
+
+        Adds three features:
+          FNG_Score       – raw 0-100 index value
+          FNG_Normalized  – 0-1 scaled version (Score / 100)
+          FNG_Trend       – 3-day momentum (today's score - score 3 days ago)
         """
         sentiment_df = self.sentiment_fetcher.get_sentiment_data()
         if sentiment_df is None:
+            print("⚠️  Sentiment data unavailable, skipping FNG features")
             return df
-        
-        # Merge on Date
-        # Ensure dates are in same format
+
+        # Normalise dates
         df['Date_Str'] = df['Date'].dt.strftime('%Y-%m-%d')
         sentiment_df['Date_Str'] = sentiment_df['Date'].dt.strftime('%Y-%m-%d')
-        
-        # We only need the score for now
-        sentiment_subset = sentiment_df[['Date_Str', 'FNG_Score']]
-        
-        # Merge
+
+        # Compute derived features on the sentiment dataframe
+        sentiment_df = sentiment_df.copy()
+        sentiment_df['FNG_Normalized'] = sentiment_df['FNG_Score'] / 100.0
+        sentiment_df['FNG_Trend'] = sentiment_df['FNG_Score'].diff(3)   # 3-day momentum
+
+        # Select columns to merge
+        cols_to_merge = ['Date_Str', 'FNG_Score', 'FNG_Normalized', 'FNG_Trend']
+        sentiment_subset = sentiment_df[cols_to_merge]
+
+        # Left-merge (keep all price rows)
         result = pd.merge(df, sentiment_subset, on='Date_Str', how='left')
-        
-        # Fill missing values (FNG might not have data for all dates)
-        result['FNG_Score'] = result['FNG_Score'].fillna(method='ffill').fillna(method='bfill')
-        
-        # Clean up
+
+        # Fill gaps (weekends / missing market days)
+        for col in ['FNG_Score', 'FNG_Normalized', 'FNG_Trend']:
+            result[col] = result[col].fillna(method='ffill').fillna(method='bfill')
+
         result = result.drop('Date_Str', axis=1)
-        
+        print(f"✅ Sentiment features added: FNG_Score, FNG_Normalized, FNG_Trend")
         return result
 
-    def prepare_data_for_model(self, coin, lookback=60, include_sentiment=True):
+    def add_external_market_data(self, df):
+        """
+        Merge external market data (S&P 500, Dollar Index, Gold) into the dataset (PHASE 12)
+        """
+        market_df = self.external_fetcher.get_market_data()
+        if market_df is None:
+            print("⚠️  External market data unavailable, skipping correlation features")
+            return df
+        
+        # Normalise dates
+        df['Date_Only'] = df['Date'].dt.date
+        market_df['Date_Only'] = pd.to_datetime(market_df['Date']).dt.date
+        
+        # Select columns to merge
+        cols_to_merge = ['Date_Only', 'SP500_Close', 'DXY_Close', 'GOLD_Close', 'NASDAQ_Close']
+        cols_to_merge = [c for c in cols_to_merge if c in market_df.columns]
+        market_subset = market_df[cols_to_merge]
+        
+        # Merge
+        result = pd.merge(df, market_subset, on='Date_Only', how='left')
+        
+        # Fill gaps (market holidays)
+        for col in cols_to_merge:
+            if col != 'Date_Only':
+                result[col] = result[col].fillna(method='ffill').fillna(method='bfill')
+        
+        # Add correlation/ratio features? (Maybe later)
+        
+        result = result.drop('Date_Only', axis=1)
+        print(f"✅ External market features added: {', '.join([c for c in cols_to_merge if c != 'Date_Only'])}")
+        return result
+
+    def prepare_data_for_model(self, coin, lookback=60, include_sentiment=True, include_external=True):
         """
         Prepare data for ML model training/prediction (Phase 2 includes Sentiment)
         """
@@ -286,6 +333,10 @@ class DataFetcher:
         # Add market sentiment (Phase 2)
         if include_sentiment:
             df = self.add_sentiment_data(df)
+            
+        # Add external market data (Phase 12)
+        if include_external:
+            df = self.add_external_market_data(df)
         
         # Return cleaned data
         return df.dropna()

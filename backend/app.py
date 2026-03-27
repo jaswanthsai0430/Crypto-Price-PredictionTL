@@ -170,11 +170,17 @@ def get_all_data(coin):
         return jsonify({'error': f'Unsupported coin: {coin}'}), 400
     
     try:
+        # Get timeframe params from query string
+        period = request.args.get('period', '1mo')
+        interval = request.args.get('interval', '1d')
+        
+        print(f"Fetch request for {coin}: period={period}, interval={interval}")
+
         # Get current price
         current = data_fetcher.get_current_price(coin)
         
-        # Get historical data
-        historical = data_fetcher.get_historical_data(coin, period='1mo', interval='1d')
+        # Get historical data with timeframe support
+        historical = data_fetcher.get_historical_data(coin, period=period, interval=interval)
 
         if historical is not None:
             chart_data = []

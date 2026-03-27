@@ -78,13 +78,14 @@ class CryptoCompareAPI:
             print(f"CryptoCompare API error for {coin}: {str(e)}")
             return None
     
-    def get_historical_data(self, coin, days=365):
+    def get_historical_data(self, coin, days=365, interval='1d'):
         """
         Get historical OHLC data
         
         Args:
             coin: Cryptocurrency symbol
             days: Number of days of historical data
+            interval: Data interval ('1d', '1h', '4h')
         
         Returns:
             DataFrame with OHLCV data
@@ -94,15 +95,35 @@ class CryptoCompareAPI:
             raise ValueError(f"Unsupported coin: {coin}")
         
         try:
-            # CryptoCompare returns max 2000 data points per request
-            # For 5 years (1825 days), we need 1 request with daily data
-            url = f"{self.base_url}/v2/histoday"
+            # Determine endpoint based on interval
+            if interval == '1d':
+                endpoint = "v2/histoday"
+                limit = min(days, 2000)
+            elif interval == '1w':
+                endpoint = "v2/histoday"
+                # For weekly, we fetch daily but aggregate by 7
+                limit = min(days, 2000)
+            elif interval in ['1h', '4h']:
+                endpoint = "v2/histohour"
+                # Limit for hourly: if 1mo, 30*24 = 720 points.
+                limit = min(days * 24, 2000)
+            else:
+                endpoint = "v2/histoday"
+                limit = min(days, 2000)
+
+            url = f"{self.base_url}/{endpoint}"
             params = {
                 'fsym': symbol,
                 'tsym': 'USD',
-                'limit': min(days, 2000)  # Max 2000 per request
+                'limit': limit
             }
             
+            # Aggregate for 4h and 1w
+            if interval == '4h':
+                params['aggregate'] = 4
+            elif interval == '1w':
+                params['aggregate'] = 7
+
             response = self.session.get(url, params=params, timeout=15)
             response.raise_for_status()
             
