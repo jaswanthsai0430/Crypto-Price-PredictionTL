@@ -2,6 +2,12 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sys
 import os
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import base64
+from io import BytesIO
+import pandas as pd
+from datetime import datetime, timedelta
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -30,7 +36,9 @@ def home():
             'current_price': '/api/price/<coin>',
             'predict': '/api/predict/<coin>',
             'sentiment': '/api/sentiment/<coin>',
-            'train': '/api/train/<coin>'
+            'train': '/api/train/<coin>',
+            'plot_comparison': '/api/plot/<coin>?days=30',
+            'all_data': '/api/all/<coin>?period=1mo&interval=1d'
         },
         'supported_coins': SUPPORTED_COINS
     })
@@ -217,6 +225,104 @@ def get_all_data(coin):
             'sentiment': sentiment
         })
     
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/plot/<coin>', methods=['GET'])
+def get_price_comparison_plot(coin):
+    """Generate comparison plot of actual vs predicted prices"""
+    coin = coin.upper()
+
+    if coin not in SUPPORTED_COINS:
+        return jsonify({'error': f'Unsupported coin: {coin}'}), 400
+
+    try:
+        # Get parameters
+        days = int(request.args.get('days', 30))  # Number of days to plot
+
+        # Get historical data
+        data = data_fetcher.prepare_data_for_model(coin)
+
+        if data is None or len(data) < 60:
+            return jsonify({'error': 'Insufficient data for plotting'}), 500
+
+        # Initialize predictor
+        predictor = PricePredictor(coin)
+
+        # Try to load existing model
+        if not predictor.load_model():
+            return jsonify({'error': 'No trained model found for this coin'}), 500
+
+        # Generate predictions for the last 'days' period
+        actual_prices = []
+        predicted_prices = []
+        dates = []
+
+        # Use the last 'days' of data for plotting
+        plot_data = data.tail(days + predictor.lookback).copy()
+
+        for i in range(len(plot_data) - predictor.lookback):
+            # Get actual price for this day
+            actual_price = plot_data['Close'].iloc[i + predictor.lookback]
+            actual_prices.append(actual_price)
+
+            # Get prediction for this day (using data up to this point)
+            pred_data = plot_data.iloc[i:i + predictor.lookback]
+            prediction = predictor.predict(pred_data)
+
+            if prediction and 'predictions' in prediction and len(prediction['predictions']) > 0:
+                predicted_prices.append(prediction['predictions'][0]['price'])
+            else:
+                predicted_prices.append(None)
+
+            # Get date
+            date = plot_data.index[i + predictor.lookback] if hasattr(plot_data.index[i + predictor.lookback], 'strftime') else pd.to_datetime(plot_data['Date'].iloc[i + predictor.lookback])
+            dates.append(date)
+
+        # Create the plot
+        plt.figure(figsize=(12, 6))
+        plt.style.use('default')  # Use default style for clean look
+
+        # Plot actual prices
+        plt.plot(dates, actual_prices, label='Actual Price', color='#1f77b4', linewidth=2, marker='o', markersize=3)
+
+        # Plot predicted prices (only where we have predictions)
+        valid_predictions = [(d, p) for d, p in zip(dates, predicted_prices) if p is not None]
+        if valid_predictions:
+            pred_dates, pred_prices = zip(*valid_predictions)
+            plt.plot(pred_dates, pred_prices, label='Predicted Price', color='#ff7f0e', linewidth=2, linestyle='--', marker='s', markersize=3)
+
+        # Formatting
+        plt.title(f'{coin} Price: Actual vs Predicted (Last {days} Days)', fontsize=14, fontweight='bold')
+        plt.xlabel('Date', fontsize=12)
+        plt.ylabel('Price (USD)', fontsize=12)
+        plt.legend(fontsize=12)
+        plt.grid(True, alpha=0.3)
+
+        # Format x-axis dates
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=max(1, days//10)))
+        plt.xticks(rotation=45, ha='right')
+
+        # Tight layout
+        plt.tight_layout()
+
+        # Convert plot to base64 string
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png', dpi=100, bbox_inches='tight')
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        plt.close()
+
+        return jsonify({
+            'success': True,
+            'coin': coin,
+            'plot_data': image_base64,
+            'plot_type': 'png',
+            'days': days,
+            'description': f'Comparison plot showing actual vs predicted {coin} prices over the last {days} days'
+        })
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

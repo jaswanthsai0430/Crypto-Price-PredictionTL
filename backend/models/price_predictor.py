@@ -194,7 +194,7 @@ class PricePredictor:
         )
         
         # Train model
-        print(f"\n⏳ Starting training... (this may take a few minutes)")
+        print(f"\n Starting training... (this may take a few minutes)")
         history = self.model.fit(
             X_train, y_train,
             epochs=epochs,
@@ -224,7 +224,7 @@ class PricePredictor:
         with open(self.config_path, 'w') as f:
             json.dump(config, f, indent=2)
         
-        print(f"\n✅ Model trained and saved to {self.model_path}")
+        print(f"\n Model trained and saved to {self.model_path}")
         print(f"📊 Final Training Loss: {history.history['loss'][-1]:.6f}")
         print(f"📊 Final Validation Loss: {history.history['val_loss'][-1]:.6f}")
         print(f"🔢 Features used: {len(feature_cols)}")

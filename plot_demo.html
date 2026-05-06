@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Price Prediction - Plot Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .plot-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .plot-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        select, button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Crypto Price Prediction - Actual vs Predicted Plot</h1>
+
+        <div class="info">
+            <strong>New Feature:</strong> Compare actual cryptocurrency prices with model predictions over time.
+            <br><strong>API Endpoint:</strong> <code>GET /api/plot/{coin}?days={number}</code>
+        </div>
+
+        <div class="controls">
+            <label for="coin-select">Select Coin:</label>
+            <select id="coin-select">
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="SOLANA">Solana (SOLANA)</option>
+                <option value="BNB">Binance Coin (BNB)</option>
+                <option value="DOGE">Dogecoin (DOGE)</option>
+                <option value="XRP">Ripple (XRP)</option>
+                <option value="ADA">Cardano (ADA)</option>
+                <option value="AVAX">Avalanche (AVAX)</option>
+                <option value="DOT">Polkadot (DOT)</option>
+                <option value="LINK">Chainlink (LINK)</option>
+            </select>
+
+            <label for="days-select">Days:</label>
+            <select id="days-select">
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="60">60 days</option>
+                <option value="90">90 days</option>
+            </select>
+
+            <button onclick="loadPlot()">Generate Plot</button>
+        </div>
+
+        <div class="plot-container">
+            <div id="loading" style="display: none;">Generating plot...</div>
+            <img id="plot-image" class="plot-image" src="" alt="Price comparison plot" style="display: none;">
+            <div id="error-message" style="display: none; color: red;"></div>
+        </div>
+
+        <div class="info">
+            <h3>📊 How it works:</h3>
+            <ul>
+                <li><strong>Blue line (●):</strong> Actual historical prices</li>
+                <li><strong>Orange line (■):</strong> Model predictions for each day</li>
+                <li>The plot shows how well the LSTM model predicts price movements</li>
+                <li>Lower divergence between lines = better model accuracy</li>
+            </ul>
+
+            <h3>🔧 Technical Details:</h3>
+            <ul>
+                <li>Uses Bidirectional LSTM neural network</li>
+                <li>60-day lookback window for predictions</li>
+                <li>Features: Price, Volume, Moving Averages, RSI, MACD</li>
+                <li>Trained on historical data with early stopping</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+
+        async function loadPlot() {
+            const coin = document.getElementById('coin-select').value;
+            const days = document.getElementById('days-select').value;
+
+            const loading = document.getElementById('loading');
+            const plotImage = document.getElementById('plot-image');
+            const errorMessage = document.getElementById('error-message');
+
+            // Show loading
+            loading.style.display = 'block';
+            plotImage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/plot/${coin}?days=${days}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Set the image source to the base64 data
+                    plotImage.src = `data:image/png;base64,${data.plot_data}`;
+                    plotImage.style.display = 'block';
+                    plotImage.alt = data.description;
+                } else {
+                    throw new Error(data.error || 'Failed to generate plot');
+                }
+            } catch (error) {
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Load default plot on page load
+        window.onload = () => loadPlot();
+    </script>
+</body>
+</html>
